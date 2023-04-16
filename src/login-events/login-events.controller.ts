@@ -2,42 +2,69 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { LoginEventsService } from './login-events.service';
 import { LoginUserDto } from './dto/login-user.dto';
 import { UserRegisterDto } from './dto/register-login-event.dto';
+import { BaseRequest } from './dto/base-request.dto';
+import { LoginUserByTokenDto } from './dto/login-user-by-token.dto';
+import { BaseResponse } from './dto/base-response.dto';
 
-@Controller('login-events')
+@Controller('users')
 export class LoginEventsController {
   constructor(private readonly loginEventsService: LoginEventsService) {}
 
   @Post('register')
-  register(@Body() userRegisterDto: UserRegisterDto) {
+  async register(@Body() request: BaseRequest) {
+    let userRegisterDto: UserRegisterDto;
+    let promise: any;
+
+    userRegisterDto = request.data as UserRegisterDto;
+
     console.log('Register');
 
-    return this.loginEventsService.register(userRegisterDto);
+    await this.loginEventsService
+      .register(userRegisterDto)
+      .then(function (result) {
+        promise = result;
+      });
+
+    return this.generateResponse(promise);
   }
 
   @Post('login')
-  login(@Body() createLoginEventDto: LoginUserDto) {
+  async login(@Body() request: BaseRequest) {
+    let createLoginEventDto: LoginUserDto;
+    let promise: any;
+    createLoginEventDto = request.data as LoginUserDto;
     console.log('login');
 
-    return this.loginEventsService.login(createLoginEventDto);
+    await this.loginEventsService
+      .login(createLoginEventDto)
+      .then(function (result) {
+        promise = result;
+      });
+    return this.generateResponse(promise);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.loginEventsService.findAll();
-  // }
-  //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.loginEventsService.findOne(+id);
-  // }
-  //
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateLoginEventDto: UpdateLoginEventDto) {
-  //   return this.loginEventsService.update(+id, updateLoginEventDto);
-  // }
-  //
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.loginEventsService.remove(+id);
-  // }
+  @Post('tokenlogin')
+  async loginByToken(@Body() request: BaseRequest) {
+    let loginUserByTokenDto: LoginUserByTokenDto;
+    let promise: any;
+
+    loginUserByTokenDto = request.data as LoginUserByTokenDto;
+    console.log('login');
+
+    await this.loginEventsService
+      .loginByToken(loginUserByTokenDto)
+      .then(function (result) {
+        promise = result;
+      });
+
+    return this.generateResponse(promise);
+  }
+
+  private generateResponse(promise: any) {
+    let baseResponse = new BaseResponse();
+    baseResponse.statusCode = 0;
+    baseResponse.data = promise;
+    baseResponse.message = 'OK';
+    return baseResponse;
+  }
 }

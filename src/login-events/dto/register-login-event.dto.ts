@@ -4,4 +4,5 @@ export class UserRegisterDto {
   address: string;
   username: string;
   password: string;
+  token: string;
 }
