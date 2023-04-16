@@ -6,6 +6,7 @@ import { User } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import { LoginUserByTokenDto } from './dto/login-user-by-token.dto';
 import { TokenBase, TokenGenerator } from 'ts-token-generator';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
 export class LoginEventsService {
@@ -14,6 +15,7 @@ export class LoginEventsService {
   async register(userRegisterDto: UserRegisterDto) {
     let responseUser: User;
 
+    userRegisterDto.password = this.encrypt(userRegisterDto.password);
     userRegisterDto.token = this.generateToken();
     const createdUser = new this.userModel(userRegisterDto);
     await createdUser.save().then(function (result) {
@@ -29,7 +31,7 @@ export class LoginEventsService {
     await this.userModel
       .findOne({
         username: loginUserDto.username,
-        password: loginUserDto.password,
+        password: this.encrypt(loginUserDto.password),
       })
       .exec()
       .then(function (result) {
@@ -72,5 +74,9 @@ export class LoginEventsService {
       baseEncoding: TokenBase.BASE62,
     });
     return tokgen.generate();
+  }
+
+  private encrypt(password: string) {
+    return CryptoJS.SHA256(password).toString();
   }
 }
