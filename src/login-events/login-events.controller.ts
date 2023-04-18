@@ -17,7 +17,7 @@ export class LoginEventsController {
 
     userRegisterDto = request.data as UserRegisterDto;
 
-    console.log('Register');
+    console.log('Register :: ', { userRegisterDto });
 
     await this.loginEventsService
       .register(userRegisterDto)
@@ -33,7 +33,7 @@ export class LoginEventsController {
     let createLoginEventDto: LoginUserDto;
     let promise: any;
     createLoginEventDto = request.data as LoginUserDto;
-    console.log('login');
+    console.log('login :: ', {request});
 
     await this.loginEventsService
       .login(createLoginEventDto)

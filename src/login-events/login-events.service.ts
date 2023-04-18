@@ -28,23 +28,27 @@ export class LoginEventsService {
   async login(loginUserDto: LoginUserDto) {
     let responseLogin: User;
 
-    await this.userModel
+    const user =  await this.userModel
       .findOne({
         username: loginUserDto.username,
         password: this.encrypt(loginUserDto.password),
       })
-      .exec()
-      .then(function (result) {
-        console.log(result);
+      .exec();
+      // .then(function (result) {
+      //   console.log(result);
+      //
+      //   if (result == null) {
+      //     throw new NotFoundException('Usuario no encontrado');
+      //   }
 
-        if (result == null) {
-          throw new NotFoundException('Usuario no encontrado');
-        }
+      //   responseLogin = result;
+      // });
 
-        responseLogin = result;
-      });
+    if (user == null) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
 
-    return responseLogin;
+    return user;
   }
 
   async loginByToken(loginUserByTokenDto: LoginUserByTokenDto) {
