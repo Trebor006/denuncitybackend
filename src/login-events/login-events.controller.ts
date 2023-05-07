@@ -33,7 +33,7 @@ export class LoginEventsController {
     let createLoginEventDto: LoginUserDto;
     let promise: any;
     createLoginEventDto = request.data as LoginUserDto;
-    console.log('login :: ', {request});
+    console.log('login :: ', { request });
 
     await this.loginEventsService
       .login(createLoginEventDto)
@@ -65,6 +65,7 @@ export class LoginEventsController {
     baseResponse.statusCode = 0;
     baseResponse.data = promise;
     baseResponse.message = 'OK';
+
     return baseResponse;
   }
 }
