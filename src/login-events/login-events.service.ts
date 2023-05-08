@@ -9,6 +9,7 @@ import { TokenBase, TokenGenerator } from 'ts-token-generator';
 import * as CryptoJS from 'crypto-js';
 import { MailingService } from '../mailing/mailing.service';
 import { CodeVerifierService } from '../code-verifier/code-verifier.service';
+import { PasswordHistoryService } from '../password-history/password-history.service';
 
 @Injectable()
 export class LoginEventsService {
@@ -16,23 +17,44 @@ export class LoginEventsService {
     @InjectModel(User.name) private userModel: Model<User>,
     private readonly mailingService: MailingService,
     private readonly codeVerifierService: CodeVerifierService,
+    private readonly passwordHistoryService: PasswordHistoryService,
   ) {}
 
   async register(userRegisterDto: UserRegisterDto) {
     let responseUser: User;
+    const newPassword = this.encrypt(userRegisterDto.password);
+    const verification = await this.passwordHistoryService.verifyNewPassword(
+      userRegisterDto.mail,
+      newPassword,
+    );
 
-    userRegisterDto.password = this.encrypt(userRegisterDto.password);
+    if (!verification) {
+      //todo retornar excepcion
+      console.log('Excepcion por la contraseña!!');
+      throw new Error('Excepcion por la contraseña!!');
+    }
+
+    userRegisterDto.password = newPassword;
     userRegisterDto.token = this.generateToken();
     const createdUser = new this.userModel(userRegisterDto);
     await createdUser.save().then(function (result) {
       responseUser = result;
     });
 
+    this.passwordHistoryService.registerNewHistory(
+      responseUser.mail,
+      newPassword,
+    );
+
     const code = await this.codeVerifierService.generateCode(
       userRegisterDto.mail,
     );
 
-    this.mailingService.sendMail(responseUser.name, responseUser.mail, code);
+    this.mailingService.sendMail(
+      responseUser.name + ' ' + responseUser.lastname,
+      responseUser.mail,
+      code,
+    );
 
     return responseUser;
   }
@@ -42,7 +64,7 @@ export class LoginEventsService {
 
     const user = await this.userModel
       .findOne({
-        username: loginUserDto.username,
+        mail: loginUserDto.mail,
         password: this.encrypt(loginUserDto.password),
       })
       .exec();

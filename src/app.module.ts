@@ -6,8 +6,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { CodeVerifierService } from './code-verifier/code-verifier.service';
 import { CodeVerifierModule } from './code-verifier/code-verifier.module';
+import { PasswordHistoryModule } from './password-history/password-history.module';
+import { ConfigurationsService } from './configurations/configurations.service';
+import { ConfigurationsModule } from './configurations/configurations.module';
+import { SegipApiModule } from './segip-api/segip-api.module';
+import { FaceRecognitionService } from './face-recognition/face-recognition.service';
+import { FaceRecognitionModule } from './face-recognition/face-recognition.module';
+import { VerificationCodeModule } from './verification-code/verification-code.module';
 
 @Module({
   imports: [
@@ -42,8 +48,13 @@ import { CodeVerifierModule } from './code-verifier/code-verifier.module';
       }),
     }),
     CodeVerifierModule,
+    PasswordHistoryModule,
+    ConfigurationsModule,
+    SegipApiModule,
+    FaceRecognitionModule,
+    VerificationCodeModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ConfigService],
+  providers: [AppService, ConfigService, ConfigurationsService, FaceRecognitionService],
 })
 export class AppModule {}

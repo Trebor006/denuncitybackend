@@ -1,9 +1,8 @@
 export class UserRegisterDto {
   name: string;
   lastname: string;
-  mail: string;
   address: string;
-  username: string;
+  mail: string;
   password: string;
   token: string;
 }

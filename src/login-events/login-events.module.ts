@@ -10,6 +10,11 @@ import {
   MailVerifier,
   MailVerifierSchema,
 } from '../schemas/mail.verifier.schema';
+import { PasswordHistoryService } from '../password-history/password-history.service';
+import {
+  PasswordHistory,
+  PasswordHistorySchema,
+} from '../schemas/password.history.schema';
 
 @Module({
   imports: [
@@ -17,9 +22,15 @@ import {
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: MailVerifier.name, schema: MailVerifierSchema },
+      { name: PasswordHistory.name, schema: PasswordHistorySchema },
     ]),
   ],
   controllers: [LoginEventsController],
-  providers: [LoginEventsService, MailingService, CodeVerifierService],
+  providers: [
+    LoginEventsService,
+    MailingService,
+    CodeVerifierService,
+    PasswordHistoryService,
+  ],
 })
 export class LoginEventsModule {}
