@@ -11,7 +11,9 @@ describe('VerificationCodeController', () => {
       providers: [VerificationCodeService],
     }).compile();
 
-    controller = module.get<VerificationCodeController>(VerificationCodeController);
+    controller = module.get<VerificationCodeController>(
+      VerificationCodeController,
+    );
   });
 
   it('should be defined', () => {

@@ -1,3 +1,3 @@
 export class CreateVerificationCodeDto {
-    mail: string;
+  mail: string;
 }

@@ -4,7 +4,6 @@ import { UpdateConfigurationDto } from './dto/update-configuration.dto';
 
 @Injectable()
 export class ConfigurationsService {
-
   //todo implementar las configuraciones!!!!
   create(createConfigurationDto: CreateConfigurationDto) {
     return 'This action adds a new configuration';

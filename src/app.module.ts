@@ -55,6 +55,11 @@ import { VerificationCodeModule } from './verification-code/verification-code.mo
     VerificationCodeModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ConfigService, ConfigurationsService, FaceRecognitionService],
+  providers: [
+    AppService,
+    ConfigService,
+    ConfigurationsService,
+    FaceRecognitionService,
+  ],
 })
 export class AppModule {}

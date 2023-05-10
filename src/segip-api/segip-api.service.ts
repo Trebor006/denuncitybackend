@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import {Injectable} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
 import axios from 'axios';
-import { ValidationRequest } from './dto/validation-request.dto';
-import { PersonDto } from './dto/person.dto';
-import { SegipResponseDto } from './dto/segip-response.dto';
-import { FaceRecognitionService } from '../face-recognition/face-recognition.service';
+import {ValidationRequest} from './dto/validation-request.dto';
+import {PersonDto} from './dto/person.dto';
+import {SegipResponseDto} from './dto/segip-response.dto';
+import {FaceRecognitionService} from '../face-recognition/face-recognition.service';
 
 // import { Buffer } from 'buffer';
 
