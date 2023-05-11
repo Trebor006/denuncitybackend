@@ -3,7 +3,7 @@ export class PersonDto {
   identification: string;
   name: string;
   lastname: string;
-  dateofbirth: string;
+  dateOfBirth: string;
   gender: string;
   address: string;
   phone: string;

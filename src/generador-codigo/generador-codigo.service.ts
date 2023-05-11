@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CodigoVerificacion } from '../schemas/codigo.verificacion.schema';
-import { MailVerifierDto } from './dto/mail-verifier.dto';
+import { VerificadorCorreoDto } from './dto/verificador-correo.dto';
 
 @Injectable()
 export class GeneradorCodigoService {
@@ -12,7 +12,7 @@ export class GeneradorCodigoService {
   ) {}
 
   async generarCodigo(correo: string): Promise<string> {
-    let mailVerifierDto = new MailVerifierDto();
+    let mailVerifierDto = new VerificadorCorreoDto();
     mailVerifierDto.correo = correo;
     mailVerifierDto.codigo = this.obtenerNuevoCodigo();
 

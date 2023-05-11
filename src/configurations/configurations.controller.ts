@@ -1,45 +1,14 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ConfigurationsService } from './configurations.service';
-import { CreateConfigurationDto } from './dto/create-configuration.dto';
-import { UpdateConfigurationDto } from './dto/update-configuration.dto';
+import { RegistroConfiguracionValidacionContrasenaDto } from './dto/RegistroConfiguracionValidacionContrasena.dto';
 
-@Controller('configurations')
+@Controller('configuraciones')
 export class ConfigurationsController {
   constructor(private readonly configurationsService: ConfigurationsService) {}
 
-  @Post()
-  create(@Body() createConfigurationDto: CreateConfigurationDto) {
-    return this.configurationsService.create(createConfigurationDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.configurationsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.configurationsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateConfigurationDto: UpdateConfigurationDto,
-  ) {
-    return this.configurationsService.update(+id, updateConfigurationDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.configurationsService.remove(+id);
+  @Post("registrar")
+  registrarConfiguracion(@Body() createConfigurationDto: RegistroConfiguracionValidacionContrasenaDto) {
+     const promise = this.configurationsService.registrarConfiguracion(createConfigurationDto);
+     return promise;
   }
 }

@@ -79,7 +79,7 @@ export class ValidateUserApiService {
       direccion: person.address,
       telefono: person.phone,
       carnet: person.identification,
-      fechaNacimiento: person.dateofbirth
+      fechaNacimiento: person.dateOfBirth
     };
 
     return userDto;

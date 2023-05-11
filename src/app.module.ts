@@ -1,29 +1,33 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { LoginEventsModule } from './login/login-events.module';
+import { LoginModule } from './login/login.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { GeneradorCodigoModule } from './generador-codigo/generador-codigo.module';
-import { PasswordHistoryModule } from './password-history/password-history.module';
+import { HistorialContrasenaModule } from './historial-contrasena/historial-contrasena.module';
 import { ConfigurationsService } from './configurations/configurations.service';
 import { ConfigurationsModule } from './configurations/configurations.module';
 import { ValidateUserApiModule } from './validate-user-api/validate-user-api.module';
 import { FaceRecognitionService } from './face-recognition/face-recognition.service';
 import { FaceRecognitionModule } from './face-recognition/face-recognition.module';
 import { VerificationCodeModule } from './verification-code/verification-code.module';
+import {Configuraciones, ConfiguracionesSchema} from "./schemas/configuracion.schema";
 
 @Module({
   imports: [
-    LoginEventsModule,
+    LoginModule,
     ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       useFactory: async () => ({
         uri: process.env.MONGODB_URL,
       }),
     }),
+    MongooseModule.forFeature([
+      { name: Configuraciones.name, schema: ConfiguracionesSchema },
+    ]),
     MailerModule.forRootAsync({
       useFactory: () => ({
         transport: {
@@ -48,7 +52,7 @@ import { VerificationCodeModule } from './verification-code/verification-code.mo
       }),
     }),
     GeneradorCodigoModule,
-    PasswordHistoryModule,
+    HistorialContrasenaModule,
     ConfigurationsModule,
     ValidateUserApiModule,
     FaceRecognitionModule,

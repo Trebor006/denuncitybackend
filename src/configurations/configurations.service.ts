@@ -1,27 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { CreateConfigurationDto } from './dto/create-configuration.dto';
-import { UpdateConfigurationDto } from './dto/update-configuration.dto';
+import { RegistroConfiguracionValidacionContrasenaDto } from './dto/RegistroConfiguracionValidacionContrasena.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Configuraciones } from '../schemas/configuracion.schema';
+import { ConfiguracionDto } from './dto/Configuracion.dto';
 
 @Injectable()
 export class ConfigurationsService {
-  //todo implementar las configuraciones!!!!
-  create(createConfigurationDto: CreateConfigurationDto) {
-    return 'This action adds a new configuration';
+  constructor(
+    @InjectModel(Configuraciones.name)
+    private configurationModel: Model<Configuraciones>,
+  ) {}
+
+  async registrarConfiguracion(
+    createConfigurationDto: RegistroConfiguracionValidacionContrasenaDto,
+  ) {
+    let configuracionDto: ConfiguracionDto = new ConfiguracionDto();
+    configuracionDto.nombre = 'validar_duracion_contrasena';
+    configuracionDto.configuracion = createConfigurationDto;
+
+    await this.configurationModel
+      .deleteMany({
+        nombre: configuracionDto.nombre,
+      })
+      .exec();
+
+    const model = new this.configurationModel(configuracionDto);
+    const configuracionAlmacenada = await model.save();
+
+    return configuracionAlmacenada;
   }
 
-  findAll() {
-    return `This action returns all configurations`;
-  }
+  async obtenerConfiguracionValidarContrasena() {
+    const configuracionAlmacenada = await this.configurationModel
+      .findOne({
+        nombre: 'validar_duracion_contrasena',
+      })
+      .exec();
 
-  findOne(id: number) {
-    return `This action returns a #${id} configuration`;
-  }
+    const configuracion =
+      configuracionAlmacenada.configuracion as RegistroConfiguracionValidacionContrasenaDto;
 
-  update(id: number, updateConfigurationDto: UpdateConfigurationDto) {
-    return `This action updates a #${id} configuration`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} configuration`;
+    return configuracion;
   }
 }

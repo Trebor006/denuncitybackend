@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { PasswordHistoryService } from './password-history.service';
+import { HistorialContrasenaService } from './historial-contrasena.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   HistorialContrasena,
@@ -12,6 +12,6 @@ import {
       { name: HistorialContrasena.name, schema: HistorialContrasenaSchema },
     ]),
   ],
-  providers: [PasswordHistoryService],
+  providers: [HistorialContrasenaService],
 })
-export class PasswordHistoryModule {}
+export class HistorialContrasenaModule {}
