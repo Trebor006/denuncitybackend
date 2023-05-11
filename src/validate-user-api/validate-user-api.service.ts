@@ -5,17 +5,18 @@ import { ValidationRequest } from './dto/validation-request.dto';
 import { PersonDto } from './dto/person.dto';
 import { SegipResponseDto } from './dto/segip-response.dto';
 import { FaceRecognitionService } from '../face-recognition/face-recognition.service';
+import {UserDto} from "../common/dto/user.dto";
 
 // import { Buffer } from 'buffer';
 
 @Injectable()
-export class SegipApiService {
+export class ValidateUserApiService {
   constructor(
     private configService: ConfigService,
     private faceRecognitionService: FaceRecognitionService,
   ) {}
 
-  async getPerson(ci: string) {
+  async obtenerRegistroDeSegip(ci: string) {
     const SEGIP_URL = this.configService.get<string>('SEGIP_URL');
     const SEGIP_TOKEN = this.configService.get<string>('SEGIP_TOKEN');
     let personResult: PersonDto = null;
@@ -40,8 +41,8 @@ export class SegipApiService {
     return personResult;
   }
 
-  async validate(validationRequest: ValidationRequest): Promise<boolean> {
-    const person = await this.getPerson(validationRequest.ci);
+  async validar(validationRequest: ValidationRequest): Promise<UserDto> {
+    const person = await this.obtenerRegistroDeSegip(validationRequest.ci);
 
     console.log(
       'person :: name:' +
@@ -52,7 +53,7 @@ export class SegipApiService {
         person.identification,
     );
 
-    const person2 = await this.getPerson(validationRequest.ci2);
+    const person2 = await this.obtenerRegistroDeSegip(validationRequest.ci2);
     console.log(
         'person :: name: ' +
         person2.name +
@@ -62,16 +63,25 @@ export class SegipApiService {
         person2.identification,
     );
 
-    if (person == null) {
-      return false;
-    }
-
-    const validUser = await this.faceRecognitionService.validateUser(
+    const validUser = await this.faceRecognitionService.validarUsuarioBiometricamente(
       person.photo,
       person2.photo,
       // validationRequest.photo,
     );
 
-    return validUser;
+    if (!validUser) {
+      return null;
+    }
+
+    const userDto: UserDto = {
+      nombre: person.name,
+      apellido: person.lastname,
+      direccion: person.address,
+      telefono: person.phone,
+      carnet: person.identification,
+      fechaNacimiento: person.dateofbirth
+    };
+
+    return userDto;
   }
 }

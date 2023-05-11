@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { PasswordHistoryService } from './password-history.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
-  PasswordHistory,
-  PasswordHistorySchema,
-} from '../schemas/password.history.schema';
+  HistorialContrasena,
+  HistorialContrasenaSchema,
+} from '../schemas/historial.contrasena.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: PasswordHistory.name, schema: PasswordHistorySchema },
+      { name: HistorialContrasena.name, schema: HistorialContrasenaSchema },
     ]),
   ],
   providers: [PasswordHistoryService],

@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 export class FaceRecognitionService {
   constructor(private configService: ConfigService) {}
 
-  async validateUser(photo1: string, photo2: string): Promise<boolean> {
+  async validarUsuarioBiometricamente(photo1: string, photo2: string): Promise<boolean> {
     const BIOMETRIC_URL = this.configService.get<string>('BIOMETRIC_URL');
     const BIOMETRIC_TOKEN = this.configService.get<string>('BIOMETRIC_TOKEN');
 

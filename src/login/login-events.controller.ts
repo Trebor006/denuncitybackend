@@ -1,10 +1,10 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { LoginEventsService } from './login-events.service';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUsuarioDto } from './dto/login-usuario.dto';
 import { UserRegisterDto } from './dto/register-login-event.dto';
-import { BaseRequest } from './dto/base-request.dto';
+import { BaseRequest } from '../common/dto/base/base-request.dto';
 import { LoginUserByTokenDto } from './dto/login-user-by-token.dto';
-import { BaseResponse } from './dto/base-response.dto';
+import { BaseResponse } from '../common/dto/base/base-response.dto';
 
 @Controller('users')
 export class LoginEventsController {
@@ -30,9 +30,9 @@ export class LoginEventsController {
 
   @Post('login')
   async login(@Body() request: BaseRequest) {
-    let createLoginEventDto: LoginUserDto;
+    let createLoginEventDto: LoginUsuarioDto;
     let promise: any;
-    createLoginEventDto = request.data as LoginUserDto;
+    createLoginEventDto = request.data as LoginUsuarioDto;
     console.log('login :: ', { request });
 
     await this.loginEventsService

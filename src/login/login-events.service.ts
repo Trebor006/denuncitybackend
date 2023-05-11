@@ -1,27 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { LoginUserDto } from './dto/login-user.dto';
+import { LoginUsuarioDto } from './dto/login-usuario.dto';
 import { UserRegisterDto } from './dto/register-login-event.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../schemas/user.schema';
+import { usuario } from '../schemas/usuario.schema';
 import { Model } from 'mongoose';
 import { LoginUserByTokenDto } from './dto/login-user-by-token.dto';
 import { TokenBase, TokenGenerator } from 'ts-token-generator';
 import * as CryptoJS from 'crypto-js';
-import { MailingService } from '../mailing/mailing.service';
-import { CodeVerifierService } from '../code-verifier/code-verifier.service';
+import { MailService } from '../mail/mail.service';
+import { GeneradorCodigoService } from '../generador-codigo/generador-codigo.service';
 import { PasswordHistoryService } from '../password-history/password-history.service';
 
 @Injectable()
 export class LoginEventsService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-    private readonly mailingService: MailingService,
-    private readonly codeVerifierService: CodeVerifierService,
+    @InjectModel(usuario.name) private userModel: Model<usuario>,
+    private readonly codeVerifierService: GeneradorCodigoService,
     private readonly passwordHistoryService: PasswordHistoryService,
   ) {}
 
   async register(userRegisterDto: UserRegisterDto) {
-    let responseUser: User;
+    let responseUser: usuario;
     const newPassword = this.encrypt(userRegisterDto.password);
     const verification = await this.passwordHistoryService.verifyNewPassword(
       userRegisterDto.mail,
@@ -46,26 +45,17 @@ export class LoginEventsService {
       newPassword,
     );
 
-    const code = await this.codeVerifierService.generateCode(
-      userRegisterDto.mail,
-    );
-
-    this.mailingService.sendMail(
-      responseUser.name + ' ' + responseUser.lastname,
-      responseUser.mail,
-      code,
-    );
 
     return responseUser;
   }
 
-  async login(loginUserDto: LoginUserDto) {
-    let responseLogin: User;
+  async login(loginUserDto: LoginUsuarioDto) {
+    let responseLogin: usuario;
 
     const user = await this.userModel
       .findOne({
-        mail: loginUserDto.mail,
-        password: this.encrypt(loginUserDto.password),
+        mail: loginUserDto.correo,
+        password: this.encrypt(loginUserDto.contrasena),
       })
       .exec();
     // .then(function (result) {
@@ -86,7 +76,7 @@ export class LoginEventsService {
   }
 
   async loginByToken(loginUserByTokenDto: LoginUserByTokenDto) {
-    let responseLogin: User;
+    let responseLogin: usuario;
 
     await this.userModel
       .findOne({

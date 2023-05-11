@@ -1,21 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { PasswordHistory } from '../schemas/password.history.schema';
+import { HistorialContrasena } from '../schemas/historial.contrasena.schema';
 import { PasswordHistoryDto } from './dto/password-history.dto';
 
 @Injectable()
 export class PasswordHistoryService {
   constructor(
-    @InjectModel(PasswordHistory.name)
-    private passwordHistoryModel: Model<PasswordHistory>,
+    @InjectModel(HistorialContrasena.name)
+    private passwordHistoryModel: Model<HistorialContrasena>,
   ) {}
 
   async verifyNewPassword(mail: string, password: string): Promise<boolean> {
     const oldPassword = await this.passwordHistoryModel
       .findOne({
-        mail: mail,
-        password: password,
+        correo: mail,
+        contrasena: password,
       })
       .exec();
 
@@ -35,11 +35,11 @@ export class PasswordHistoryService {
   async verifyLastRenewPassword(mail: string): Promise<Date> {
     const oldPassword = await this.passwordHistoryModel
       .findOne({
-        mail: mail,
+        correo: mail,
       })
       .sort({ createdAt: -1 })
       .exec();
 
-    return oldPassword.createdAt;
+    return oldPassword.fechaCreacion;
   }
 }

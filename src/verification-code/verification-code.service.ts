@@ -1,14 +1,44 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVerificationCodeDto } from './dto/create-verification-code.dto';
-import { CodeVerifierService } from '../code-verifier/code-verifier.service';
+import { GenerarCodigoVerificacionDto } from './dto/generar-codigo-verificacion.dto';
+import { GeneradorCodigoService } from '../generador-codigo/generador-codigo.service';
+import { MailService } from '../mail/mail.service';
+import { ValidarCodigoVerificacionDto } from './dto/validar-codigo-verificacion.dto';
 
 @Injectable()
 export class VerificationCodeService {
-  constructor(private readonly codeVerifierService: CodeVerifierService) {}
+  constructor(
+    private readonly codeVerifierService: GeneradorCodigoService,
+    private readonly mailService: MailService,
+  ) {}
 
-  generate(createVerificationCodeDto: CreateVerificationCodeDto) {
-    this.codeVerifierService.generateCode(createVerificationCodeDto.mail);
+  async generarCodigoDeVerificacion(
+    createVerificationCodeDto: GenerarCodigoVerificacionDto,
+  ) {
+    await this.codeVerifierService.eliminarCodigosExistentes(
+      createVerificationCodeDto.correo,
+    );
 
-    return '';
+    const codigo = await this.codeVerifierService.generarCodigo(
+      createVerificationCodeDto.correo,
+    );
+
+    this.mailService.sendMail(createVerificationCodeDto.correo, codigo);
+  }
+
+  async validarCodigoDeVerificacion(
+    validarCodigoVerificacionDto: ValidarCodigoVerificacionDto,
+  ) {
+    const codigoActual = await this.codeVerifierService.obtenerCodigoActual(
+      validarCodigoVerificacionDto.correo,
+    );
+
+    const codigoCorrecto = codigoActual === validarCodigoVerificacionDto.codigo;
+    if (codigoCorrecto) {
+      await this.codeVerifierService.eliminarCodigosExistentes(
+        validarCodigoVerificacionDto.correo,
+      );
+    }
+
+    return codigoCorrecto;
   }
 }

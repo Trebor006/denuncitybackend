@@ -1,22 +1,23 @@
 import { Module } from '@nestjs/common';
 import { VerificationCodeService } from './verification-code.service';
 import { VerificationCodeController } from './verification-code.controller';
-import { CodeVerifierService } from '../code-verifier/code-verifier.service';
-import { CodeVerifierModule } from '../code-verifier/code-verifier.module';
+import { GeneradorCodigoService } from '../generador-codigo/generador-codigo.service';
+import { GeneradorCodigoModule } from '../generador-codigo/generador-codigo.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
-  MailVerifier,
-  MailVerifierSchema,
-} from '../schemas/mail.verifier.schema';
+  CodigoVerificacion,
+  CodigoVerificacionSchema,
+} from '../schemas/codigo.verificacion.schema';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [
-    CodeVerifierModule,
+    GeneradorCodigoModule,
     MongooseModule.forFeature([
-      { name: MailVerifier.name, schema: MailVerifierSchema },
+      { name: CodigoVerificacion.name, schema: CodigoVerificacionSchema },
     ]),
   ],
   controllers: [VerificationCodeController],
-  providers: [VerificationCodeService, CodeVerifierService],
+  providers: [VerificationCodeService, MailService, GeneradorCodigoService],
 })
 export class VerificationCodeModule {}
