@@ -8,6 +8,8 @@ export class SegipApiController {
 
   @Post('validateUser')
   async validarRegistroViaSegip(@Body() validationRequest: ValidationRequest) {
+    console.log("validarRegistroViaSegip :: ", {...validationRequest});
+
     const validate = await this.segipApiService.validate(validationRequest);
     return validate;
   }

@@ -42,6 +42,9 @@ export class SegipApiService {
 
   async validate(validationRequest: ValidationRequest): Promise<boolean> {
     const person = await this.getPerson(validationRequest.ci);
+
+    console.log("person :: ", {...person});
+
     const person2 = await this.getPerson(validationRequest.ci2);
     if (person == null) {
       return false;
