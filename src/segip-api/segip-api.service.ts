@@ -1,10 +1,10 @@
-import {Injectable} from '@nestjs/common';
-import {ConfigService} from '@nestjs/config';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import {ValidationRequest} from './dto/validation-request.dto';
-import {PersonDto} from './dto/person.dto';
-import {SegipResponseDto} from './dto/segip-response.dto';
-import {FaceRecognitionService} from '../face-recognition/face-recognition.service';
+import { ValidationRequest } from './dto/validation-request.dto';
+import { PersonDto } from './dto/person.dto';
+import { SegipResponseDto } from './dto/segip-response.dto';
+import { FaceRecognitionService } from '../face-recognition/face-recognition.service';
 
 // import { Buffer } from 'buffer';
 
@@ -18,7 +18,7 @@ export class SegipApiService {
   async getPerson(ci: string) {
     const SEGIP_URL = this.configService.get<string>('SEGIP_URL');
     const SEGIP_TOKEN = this.configService.get<string>('SEGIP_TOKEN');
-    let personResult = null;
+    let personResult: PersonDto = null;
 
     const url = SEGIP_URL + 'persons/' + ci;
     await axios
@@ -43,9 +43,25 @@ export class SegipApiService {
   async validate(validationRequest: ValidationRequest): Promise<boolean> {
     const person = await this.getPerson(validationRequest.ci);
 
-    console.log("person :: ", {...person});
+    console.log(
+      'person :: name:' +
+        person.name +
+        'lastName ' +
+        person.lastname +
+        'identification' +
+        person.identification,
+    );
 
     const person2 = await this.getPerson(validationRequest.ci2);
+    console.log(
+        'person :: name: ' +
+        person2.name +
+        ', lastName: ' +
+        person2.lastname +
+        ', identification : ' +
+        person2.identification,
+    );
+
     if (person == null) {
       return false;
     }

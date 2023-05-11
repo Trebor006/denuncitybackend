@@ -15,7 +15,6 @@ export class FaceRecognitionService {
     const buffer1 = this.parseBase64ToBuffer(photo1);
     const buffer2 = this.parseBase64ToBuffer(photo2);
     let result: boolean = false;
-    console.log(buffer1);
 
     const formData = new FormData();
     formData.append('file1', buffer1, { filename: 'photo1.jpg' });
@@ -32,7 +31,7 @@ export class FaceRecognitionService {
         if (response.data == 'SIMILARES') {
           result = true;
         }
-        console.log(response);
+        console.log(response.data);
       })
       .catch((error) => {
         result = false;
