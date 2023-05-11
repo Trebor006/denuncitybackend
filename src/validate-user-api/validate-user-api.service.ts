@@ -53,20 +53,9 @@ export class ValidateUserApiService {
         person.identification,
     );
 
-    const person2 = await this.obtenerRegistroDeSegip(validationRequest.ci2);
-    console.log(
-        'person :: name: ' +
-        person2.name +
-        ', lastName: ' +
-        person2.lastname +
-        ', identification : ' +
-        person2.identification,
-    );
-
     const validUser = await this.faceRecognitionService.validarUsuarioBiometricamente(
       person.photo,
-      person2.photo,
-      // validationRequest.photo,
+      validationRequest.photo,
     );
 
     if (!validUser) {
