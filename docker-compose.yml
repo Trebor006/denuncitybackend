@@ -1,0 +1,53 @@
+version: '3.1'
+
+services:
+  segipdb:
+    container_name: segipdb
+    image: postgres:13.5
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: segip
+    volumes:
+      - segip-pgsql-data:/var/lib/postgresql/data
+    networks:
+      - docker_network
+
+  segip-simulation:
+    container_name: segip-simulation
+    image: trebor006/ms-segip-simulation:latest
+    restart: always
+    ports:
+      - '8099:8099'
+    networks:
+      - docker_network
+    depends_on:
+      - segipdb
+
+  reconocimiento_facial:
+    container_name: reconocimiento_facial
+    image: trebor006/reconocimiento_facial:latest
+    restart: always
+    ports:
+      - '8080:8080'
+    networks:
+      - docker_network
+
+  denuncitybackend:
+    container_name: denuncitybackend
+    image: trebor006/denuncitybackend:latest
+    restart: always
+    ports:
+      - '3001:3001'
+    networks:
+      - docker_network
+
+
+networks:
+  docker_network:
+    driver: bridge
+
+volumes:
+  segip-pgsql-data:
