@@ -5,9 +5,7 @@ import { ValidationRequest } from './dto/validation-request.dto';
 import { PersonDto } from './dto/person.dto';
 import { SegipResponseDto } from './dto/segip-response.dto';
 import { FaceRecognitionService } from '../face-recognition/face-recognition.service';
-import {UserDto} from "../common/dto/user.dto";
-
-// import { Buffer } from 'buffer';
+import { UserDto } from '../common/dto/user.dto';
 
 @Injectable()
 export class ValidateUserApiService {
@@ -53,10 +51,11 @@ export class ValidateUserApiService {
         person.identification,
     );
 
-    const validUser = await this.faceRecognitionService.validarUsuarioBiometricamente(
-      person.photo,
-      validationRequest.photo,
-    );
+    const validUser =
+      await this.faceRecognitionService.validarUsuarioBiometricamente(
+        person.photo,
+        validationRequest.photo,
+      );
 
     if (!validUser) {
       return null;
@@ -68,7 +67,7 @@ export class ValidateUserApiService {
       direccion: person.address,
       telefono: person.phone,
       carnet: person.identification,
-      fechaNacimiento: person.dateOfBirth
+      fechaNacimiento: person.dateOfBirth,
     };
 
     return userDto;

@@ -2,18 +2,22 @@ import { Injectable } from '@nestjs/common';
 import * as FormData from 'form-data';
 import axios from 'axios';
 import { ConfigService } from '@nestjs/config';
+import {BufferUtilService} from "../common/utils/buffer-util/buffer-util.service";
 
 @Injectable()
 export class FaceRecognitionService {
-  constructor(private configService: ConfigService) {}
+  constructor(
+      private configService: ConfigService,
+      private bufferUtilService: BufferUtilService,
+  ) {}
 
   async validarUsuarioBiometricamente(photo1: string, photo2: string): Promise<boolean> {
     const BIOMETRIC_URL = this.configService.get<string>('BIOMETRIC_URL');
     const BIOMETRIC_TOKEN = this.configService.get<string>('BIOMETRIC_TOKEN');
 
     const url = BIOMETRIC_URL + 'compareFaces';
-    const buffer1 = this.parseBase64ToBuffer(photo1);
-    const buffer2 = this.parseBase64ToBuffer(photo2);
+    const buffer1 = this.bufferUtilService.parseBase64ToBuffer(photo1);
+    const buffer2 = this.bufferUtilService.parseBase64ToBuffer(photo2);
     let result: boolean = false;
 
     const formData = new FormData();
@@ -38,17 +42,5 @@ export class FaceRecognitionService {
       });
 
     return result;
-  }
-
-  private parseBase64ToBuffer(base64String: string): Buffer {
-    const binaryString = atob(base64String);
-    const buffer = new ArrayBuffer(binaryString.length);
-    const bufferView = new Uint8Array(buffer);
-
-    for (let i = 0; i < binaryString.length; i++) {
-      bufferView[i] = binaryString.charCodeAt(i);
-    }
-
-    return Buffer.from(buffer);
   }
 }

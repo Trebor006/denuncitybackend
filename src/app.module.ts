@@ -14,7 +14,16 @@ import { ValidateUserApiModule } from './validate-user-api/validate-user-api.mod
 import { FaceRecognitionService } from './face-recognition/face-recognition.service';
 import { FaceRecognitionModule } from './face-recognition/face-recognition.module';
 import { VerificationCodeModule } from './verification-code/verification-code.module';
-import {Configuraciones, ConfiguracionesSchema} from "./schemas/configuracion.schema";
+import {
+  Configuraciones,
+  ConfiguracionesSchema,
+} from './schemas/configuracion.schema';
+import { DropboxClientService } from './components/dropbox-client/dropbox-client.service';
+import { DropboxApiModule } from './components/dropbox-client/dropbox-api.module';
+import { BufferUtilService } from './common/utils/buffer-util/buffer-util.service';
+import { ClarifaiModule } from './components/clarifai/clarifai.module';
+import { OpenaiModule } from './components/openai/openai.module';
+import { DenunciasModule } from './denuncias/denuncias.module';
 
 @Module({
   imports: [
@@ -57,6 +66,10 @@ import {Configuraciones, ConfiguracionesSchema} from "./schemas/configuracion.sc
     ValidateUserApiModule,
     FaceRecognitionModule,
     VerificationCodeModule,
+    DropboxApiModule,
+    ClarifaiModule,
+    OpenaiModule,
+    DenunciasModule,
   ],
   controllers: [AppController],
   providers: [
@@ -64,6 +77,8 @@ import {Configuraciones, ConfiguracionesSchema} from "./schemas/configuracion.sc
     ConfigService,
     ConfigurationsService,
     FaceRecognitionService,
+    DropboxClientService,
+    BufferUtilService,
   ],
 })
 export class AppModule {}
