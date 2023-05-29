@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Dropbox } from 'dropbox';
 import { ConfigService } from '@nestjs/config';
 import { BufferUtilService } from '../../common/utils/buffer-util/buffer-util.service';
+import { CrearDenunciaRequestDto } from '../../denuncias/dto/crear-denuncia.request.dto';
+import { HashCodeService } from '../../common/utils/hash-code/hash-code.service';
 
 @Injectable()
 export class DropboxClientService {
@@ -11,6 +13,7 @@ export class DropboxClientService {
   constructor(
     private readonly configService: ConfigService,
     private readonly bufferUtilService: BufferUtilService,
+    private readonly hashCodeService: HashCodeService,
   ) {
     this.BASE_URL = this.configService.get<string>('DROPBOX_BASE_URL');
     this.client = new Dropbox({
@@ -22,7 +25,36 @@ export class DropboxClientService {
     await this.client.filesCreateFolderV2({ path });
   }
 
-  async subirImagenBase64(
+  async subirImagenes(
+    createDenunciaDto: CrearDenunciaRequestDto,
+    hash: string,
+  ) {
+    const folderDenuncias = this.configService.get<string>(
+      'DROPBOX_FOLDER_DENUNCIAS',
+    );
+    const folderName = this.BASE_URL + folderDenuncias + '/' + hash;
+    const existeFolder = await this.verificarFolder(folderName);
+    if (!existeFolder) {
+      await this.crearFolder(folderName);
+    }
+
+    const urlImagenes: string[] = await Promise.all(
+      createDenunciaDto.imagenesPrueba.map(async (imagen) => {
+        const url = await this.subirImagenBase64(
+          imagen,
+          this.hashCodeService.generarHashCode(imagen) + '.jpg',
+          hash,
+        );
+        console.log('image url: ' + url);
+
+        return url;
+      }),
+    );
+
+    return urlImagenes;
+  }
+
+  private async subirImagenBase64(
     photoData: string,
     fileName: string,
     folder: string,
@@ -54,7 +86,7 @@ export class DropboxClientService {
       contents,
     });
 
-    return '';
+    return finalPath;
   }
 
   async recuperarImagen(path: string): Promise<any> {

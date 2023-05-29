@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type UserDocument = HydratedDocument<Usuario>;
+export type UsuarioDocument = HydratedDocument<Usuario>;
 
 @Schema()
 export class Usuario {
@@ -28,7 +28,6 @@ export class Usuario {
 
   @Prop({ required: true })
   contrasena: string;
-
 }
 
 export const UsuarioSchema = SchemaFactory.createForClass(Usuario);

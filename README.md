@@ -53,3 +53,8 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+
+## Generar TOKEN PARA DROPBOX
+https://dropbox.github.io/dropbox-api-v2-explorer/#auth_token/from_oauth1

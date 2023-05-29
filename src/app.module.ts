@@ -24,6 +24,7 @@ import { BufferUtilService } from './common/utils/buffer-util/buffer-util.servic
 import { ClarifaiModule } from './components/clarifai/clarifai.module';
 import { OpenaiModule } from './components/openai/openai.module';
 import { DenunciasModule } from './denuncias/denuncias.module';
+import { HashCodeService } from './common/utils/hash-code/hash-code.service';
 
 @Module({
   imports: [
@@ -79,6 +80,7 @@ import { DenunciasModule } from './denuncias/denuncias.module';
     FaceRecognitionService,
     DropboxClientService,
     BufferUtilService,
+    HashCodeService,
   ],
 })
 export class AppModule {}

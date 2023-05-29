@@ -4,15 +4,22 @@ import { OpenaiService } from '../components/openai/openai.service';
 import { DropboxClientService } from '../components/dropbox-client/dropbox-client.service';
 import { ClarifaiService } from '../components/clarifai/clarifai.service';
 import { PromptsService } from './prompts.service';
-import { SHA256 } from 'crypto-js';
+import { HashCodeService } from '../common/utils/hash-code/hash-code.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Denuncia } from '../schemas/denuncia.schema';
+import { CrearDenunciaDto } from './dto/crear-denuncia.dto';
 
 @Injectable()
 export class DenunciasService {
   constructor(
+    private hashCodeService: HashCodeService,
     private clarifaiService: ClarifaiService,
     private promptsService: PromptsService,
     private openaiService: OpenaiService,
     private dropboxClientService: DropboxClientService,
+    @InjectModel(Denuncia.name)
+    private denunciaModel: Model<Denuncia>,
   ) {}
 
   async crear(createDenunciaDto: CrearDenunciaRequestDto) {
@@ -28,7 +35,8 @@ export class DenunciasService {
       return false;
     }
 
-    const hashGenerated: string = this.generarHashCode(createDenunciaDto);
+    const hashGenerated: string =
+      this.hashCodeService.generarHashCode(createDenunciaDto);
     const permitirRegistro: boolean =
       this.permitirRegistroPorHash(hashGenerated);
     if (!permitirRegistro) {
@@ -58,7 +66,7 @@ export class DenunciasService {
       return false;
     }
 
-    this.procederRegistroDenuncia(createDenunciaDto, hashGenerated);
+    await this.procederRegistroDenuncia(createDenunciaDto, hashGenerated);
 
     return {
       contenidoImagen: imagenCorrespondeTipoDenuncia,
@@ -70,14 +78,6 @@ export class DenunciasService {
     //todo agregar validacion
 
     return true;
-  }
-
-  private generarHashCode(createDenunciaDto: CrearDenunciaRequestDto) {
-    return SHA256(JSON.stringify(createDenunciaDto)).toString();
-  }
-
-  private generarHashCodeForImage(image: string) {
-    return SHA256(JSON.stringify(image)).toString();
   }
 
   private permitirRegistroPorHash(hash: string) {
@@ -140,7 +140,7 @@ export class DenunciasService {
 
     console.log('resultadoContenidoOfensivo : ' + resultadoContenidoOfensivo);
 
-    return !!resultadoContenidoOfensivo;
+    return resultadoContenidoOfensivo;
   }
 
   private async procederRegistroDenuncia(
@@ -150,15 +150,22 @@ export class DenunciasService {
     //todo agregar la logica
     //// subir imagen de denuncia para poder verificar mediante el servicio de clarifai
 
-    const urlImagenes: string[] = await Promise.all(
-      createDenunciaDto.imagenesPrueba.map((imagen) => {
-        return this.dropboxClientService.subirImagenBase64(
-          imagen,
-          this.generarHashCodeForImage(imagen),
-          hash,
-        );
-      }),
+    const imageUrls = await this.dropboxClientService.subirImagenes(
+      createDenunciaDto,
+      hash,
     );
+
+    const nuevaDenunciaDto: CrearDenunciaDto = new CrearDenunciaDto();
+    nuevaDenunciaDto.correo = createDenunciaDto.usuario;
+    nuevaDenunciaDto.titulo = createDenunciaDto.titulo;
+    nuevaDenunciaDto.descripcion = createDenunciaDto.descripcion;
+    nuevaDenunciaDto.tipoDenuncia = createDenunciaDto.tipoDenuncia;
+    nuevaDenunciaDto.estado = 'PENDIENTE';
+    nuevaDenunciaDto.imagenesUrls = imageUrls;
+    nuevaDenunciaDto.createdAt = new Date();
+
+    const model = new this.denunciaModel(nuevaDenunciaDto);
+    const denunciaAlmacenada = await model.save();
   }
 
   private async registrarSancionContenidoOfensivo(
