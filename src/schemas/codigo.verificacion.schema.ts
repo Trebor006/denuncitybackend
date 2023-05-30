@@ -12,4 +12,5 @@ export class CodigoVerificacion {
   codigo: string;
 }
 
-export const CodigoVerificacionSchema = SchemaFactory.createForClass(CodigoVerificacion);
+export const CodigoVerificacionSchema =
+  SchemaFactory.createForClass(CodigoVerificacion);

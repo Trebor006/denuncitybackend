@@ -4,8 +4,8 @@ import { LoginUsuarioDto } from './dto/login-usuario.dto';
 import { RegistroUsuarioDto } from './dto/registro.usuario.dto';
 import { BaseRequest } from '../common/dto/base/base-request.dto';
 import { BaseResponse } from '../common/dto/base/base-response.dto';
-import {VerificarLoginUsuarioDto} from "./dto/verificar.login.usuario.dto";
-import {ActualizarUsuarioDto} from "./dto/actualizar.usuario.dto";
+import { VerificarLoginUsuarioDto } from './dto/verificar.login.usuario.dto';
+import { ActualizarUsuarioDto } from './dto/actualizar.usuario.dto';
 
 @Controller('usuario')
 export class LoginController {
@@ -23,11 +23,15 @@ export class LoginController {
   }
 
   @Post('validar_validez_contrasena')
-  async validarValidezContrasena(@Body() verificarLoginUsuarioDto: VerificarLoginUsuarioDto) {
-    console.log('validarValidezContrasena :: ', { ...verificarLoginUsuarioDto });
+  async validarValidezContrasena(
+    @Body() verificarLoginUsuarioDto: VerificarLoginUsuarioDto,
+  ) {
+    console.log('validarValidezContrasena :: ', {
+      ...verificarLoginUsuarioDto,
+    });
 
     const contrasenaValida = await this.loginService.validarValidezContrasena(
-        verificarLoginUsuarioDto,
+      verificarLoginUsuarioDto,
     );
 
     return contrasenaValida;
@@ -38,7 +42,7 @@ export class LoginController {
     console.log('actualizarUsuario :: ', { ...actualizarUsuarioDto });
 
     const usuarioActualizado = await this.loginService.actualizarUsuario(
-        actualizarUsuarioDto,
+      actualizarUsuarioDto,
     );
 
     return usuarioActualizado;

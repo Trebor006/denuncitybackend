@@ -2,6 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { DenunciasService } from './denuncias.service';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { DenunciasValidatorService } from './denuncias.validator.service';
+import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
 
 @Controller('denuncias')
 export class DenunciasController {
@@ -22,6 +23,17 @@ export class DenunciasController {
     }
 
     const result = await this.denunciasService.crear(crearDenunciaDto);
+
+    return result;
+  }
+
+  @Post('/cancelar')
+  async cancelarDenuncia(
+    @Body() cancelarDenunciaRequestDto: CancelarDenunciaRequestDto,
+  ) {
+    const result = await this.denunciasService.cancelar(
+      cancelarDenunciaRequestDto,
+    );
 
     return result;
   }

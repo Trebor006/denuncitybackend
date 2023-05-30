@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as grpc from '@grpc/grpc-js';
 import { ConfigService } from '@nestjs/config';
+
 const { ClarifaiStub } = require('clarifai-nodejs-grpc');
 
 @Injectable()

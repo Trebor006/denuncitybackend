@@ -64,10 +64,6 @@ export class LoginService {
     return user;
   }
 
-  private encrypt(password: string) {
-    return CryptoJS.SHA256(password).toString();
-  }
-
   async validarValidezContrasena(
     verificarLoginUsuarioDto: VerificarLoginUsuarioDto,
   ) {
@@ -132,6 +128,10 @@ export class LoginService {
     }
 
     return contrasenaValida;
+  }
+
+  private encrypt(password: string) {
+    return CryptoJS.SHA256(password).toString();
   }
 
   private async validarContrasena(correo: string, nuevaContrasena: string) {

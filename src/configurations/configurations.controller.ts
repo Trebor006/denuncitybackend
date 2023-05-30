@@ -6,9 +6,14 @@ import { RegistroConfiguracionValidacionContrasenaDto } from './dto/RegistroConf
 export class ConfigurationsController {
   constructor(private readonly configurationsService: ConfigurationsService) {}
 
-  @Post("registrar")
-  registrarConfiguracion(@Body() createConfigurationDto: RegistroConfiguracionValidacionContrasenaDto) {
-     const promise = this.configurationsService.registrarConfiguracion(createConfigurationDto);
-     return promise;
+  @Post('registrar')
+  registrarConfiguracion(
+    @Body()
+    createConfigurationDto: RegistroConfiguracionValidacionContrasenaDto,
+  ) {
+    const promise = this.configurationsService.registrarConfiguracion(
+      createConfigurationDto,
+    );
+    return promise;
   }
 }

@@ -6,6 +6,9 @@ export type DenunciaDocument = HydratedDocument<Denuncia>;
 @Schema()
 export class Denuncia {
   @Prop({ required: true })
+  hashCode: string;
+
+  @Prop({ required: true })
   correo: string;
 
   @Prop({ required: true })

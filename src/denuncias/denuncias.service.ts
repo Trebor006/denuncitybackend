@@ -9,6 +9,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Denuncia } from '../schemas/denuncia.schema';
 import { CrearDenunciaDto } from './dto/crear-denuncia.dto';
+import { CrearSancionDto } from './dto/crear-sancion.dto';
+import { Sanciones } from '../schemas/sancion.schema';
+import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
 
 @Injectable()
 export class DenunciasService {
@@ -20,41 +23,31 @@ export class DenunciasService {
     private dropboxClientService: DropboxClientService,
     @InjectModel(Denuncia.name)
     private denunciaModel: Model<Denuncia>,
+    @InjectModel(Sanciones.name)
+    private sancionesModel: Model<Sanciones>,
   ) {}
 
   async crear(createDenunciaDto: CrearDenunciaRequestDto) {
-    //todo verificar maximo denucias por tipo
-    const permitirRegistrar: boolean =
-      this.validarMaximoDenuncias(createDenunciaDto);
+    const permitirRegistrar: boolean = await this.validarMaximoDenuncias(
+      createDenunciaDto,
+    );
     if (!permitirRegistrar) {
-      //todo devolver error por maxima cantidad de registros del usuario para el tipo de denuncia
       console.log(
         'error cantidad maximo de registros por tipo de denuncia : ' +
           createDenunciaDto.tipoDenuncia,
       );
-      return false;
+      return Error('Maximo de denuncias permitidas excedido');
     }
 
     const hashGenerated: string =
       this.hashCodeService.generarHashCode(createDenunciaDto);
-    const permitirRegistro: boolean =
-      this.permitirRegistroPorHash(hashGenerated);
+    const permitirRegistro: boolean = await this.permitirRegistroPorHash(
+      createDenunciaDto.usuario,
+      hashGenerated,
+    );
     if (!permitirRegistro) {
-      //todo agregar Error!!!
       console.log('error hash duplicado : ' + hashGenerated);
-      return false;
-    }
-
-    //todo remove esto
-    const imagenCorrespondeTipoDenuncia = true;
-    // const imagenCorrespondeTipoDenuncia = await this.verificarImagenesCorrespondeTipoDenuncia(createDenunciaDto);
-    if (!imagenCorrespondeTipoDenuncia) {
-      //todo agregar logica para cuando la imagen no tiene nada que ver con lo que indica el tipo de denuncia
-      console.log(
-        'error imagen no corresponde a tipo de denuncia : ' +
-          createDenunciaDto.tipoDenuncia,
-      );
-      return false;
+      return Error('La denuncia ya se ha registrado');
     }
 
     //todo remove esto
@@ -63,26 +56,100 @@ export class DenunciasService {
     if (denunciaContieneContenidoOfensivo) {
       this.registrarSancionContenidoOfensivo(createDenunciaDto);
       console.log('error titulo o descripcion contiene contenido ofensivo');
-      return false;
+
+      return Error('error titulo o descripcion contiene contenido ofensivo');
     }
 
-    await this.procederRegistroDenuncia(createDenunciaDto, hashGenerated);
+    //todo remove esto
+    const imagenCorrespondeTipoDenuncia = true;
+    // const imagenCorrespondeTipoDenuncia = await this.verificarImagenesCorrespondeTipoDenuncia(createDenunciaDto);
+    if (!imagenCorrespondeTipoDenuncia) {
+      console.log(
+        'error imagen no corresponde a tipo de denuncia : ' +
+          createDenunciaDto.tipoDenuncia,
+      );
 
-    return {
-      contenidoImagen: imagenCorrespondeTipoDenuncia,
-      contenidoOfensivo: denunciaContieneContenidoOfensivo,
+      return Error('error imagen no corresponde a tipo de denuncia');
+    }
+
+    const denunciaRegistrada = await this.procederRegistroDenuncia(
+      createDenunciaDto,
+      hashGenerated,
+    );
+
+    return denunciaRegistrada;
+  }
+
+  async cancelar(cancelarDenunciaRequestDto: CancelarDenunciaRequestDto) {
+    const denuncia = await this.denunciaModel
+      .findOne({
+        correo: cancelarDenunciaRequestDto.usuario,
+        hash: cancelarDenunciaRequestDto.hashCode,
+      })
+      .exec();
+
+    if (denuncia.estado !== 'PENDIENTE') {
+      console.log('No se puede cancelar por el estado');
+      return Error('No se puede cancelar por el estado');
+    }
+
+    denuncia.estado = 'CANCELADO';
+    await denuncia.save();
+
+    return true;
+  }
+
+  private async validarMaximoDenuncias(
+    createDenunciaDto: CrearDenunciaRequestDto,
+  ) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set the time to midnight for comparison
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Get the date for tomorrow
+
+    const denunciasPorTipo = await this.denunciaModel
+      .find({
+        correo: createDenunciaDto.usuario,
+        tipoDenuncia: createDenunciaDto.tipoDenuncia,
+        estado: { $ne: 'CANCELADO' },
+        createdAt: {
+          $gte: today,
+          $lt: tomorrow,
+        },
+      })
+      .exec();
+
+    return denunciasPorTipo.length < 2;
+  }
+
+  private async permitirRegistroPorHash(usuario: string, hash: string) {
+    const denunciasHash = await this.denunciaModel
+      .find({
+        correo: usuario,
+        hash: hash,
+      })
+      .exec();
+
+    return denunciasHash.length == 0;
+  }
+
+  private async registrarSancionContenidoOfensivo(
+    createDenunciaDto: CrearDenunciaRequestDto,
+  ) {
+    const fechaFinal = new Date();
+    fechaFinal.setDate(fechaFinal.getDate() + 11); // Add 1 day
+    fechaFinal.setHours(0, 0, 0, 0); // Set time to midnight
+
+    const crearSancionDto: CrearSancionDto = {
+      correo: createDenunciaDto.usuario,
+      motivo: 'Contenido Ofensivo',
+      createdAt: new Date(),
+      fechaFinal: fechaFinal,
     };
-  }
 
-  private validarMaximoDenuncias(createDenunciaDto: CrearDenunciaRequestDto) {
-    //todo agregar validacion
-
-    return true;
-  }
-
-  private permitirRegistroPorHash(hash: string) {
-    //todo validar si existe el hash en la BD
-    return true;
+    const model = new this.sancionesModel(crearSancionDto);
+    const sancrionAlmacenada = await model.save();
   }
 
   private async verificarImagenesCorrespondeTipoDenuncia(
@@ -147,15 +214,15 @@ export class DenunciasService {
     createDenunciaDto: CrearDenunciaRequestDto,
     hash: string,
   ) {
-    //todo agregar la logica
-    //// subir imagen de denuncia para poder verificar mediante el servicio de clarifai
-
-    const imageUrls = await this.dropboxClientService.subirImagenes(
-      createDenunciaDto,
-      hash,
-    );
+    //todo borrar esto
+    const imageUrls = [];
+    // const imageUrls = await this.dropboxClientService.subirImagenes(
+    //   createDenunciaDto,
+    //   hash,
+    // );
 
     const nuevaDenunciaDto: CrearDenunciaDto = new CrearDenunciaDto();
+    nuevaDenunciaDto.hashCode = hash;
     nuevaDenunciaDto.correo = createDenunciaDto.usuario;
     nuevaDenunciaDto.titulo = createDenunciaDto.titulo;
     nuevaDenunciaDto.descripcion = createDenunciaDto.descripcion;
@@ -166,12 +233,7 @@ export class DenunciasService {
 
     const model = new this.denunciaModel(nuevaDenunciaDto);
     const denunciaAlmacenada = await model.save();
-  }
 
-  private async registrarSancionContenidoOfensivo(
-    createDenunciaDto: CrearDenunciaRequestDto,
-  ) {
-    //todo agregar logica para sancionar por contenido ofensivo
-    // se debe registrar la sanción y fecha
+    return denunciaAlmacenada;
   }
 }

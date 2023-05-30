@@ -54,6 +54,11 @@ export class DropboxClientService {
     return urlImagenes;
   }
 
+  async recuperarImagen(path: string): Promise<any> {
+    const response = await this.client.filesDownload({ path });
+    return response.result;
+  }
+
   private async subirImagenBase64(
     photoData: string,
     fileName: string,
@@ -87,11 +92,6 @@ export class DropboxClientService {
     });
 
     return finalPath;
-  }
-
-  async recuperarImagen(path: string): Promise<any> {
-    const response = await this.client.filesDownload({ path });
-    return response.result;
   }
 
   private async verificarFolder(path: string) {
