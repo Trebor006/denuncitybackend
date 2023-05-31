@@ -9,8 +9,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Denuncia } from '../schemas/denuncia.schema';
 import { CrearDenunciaDto } from './dto/crear-denuncia.dto';
-import { CrearSancionDto } from './dto/crear-sancion.dto';
-import { Sanciones } from '../schemas/sancion.schema';
 import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
 
 @Injectable()
@@ -23,8 +21,6 @@ export class DenunciasService {
     private dropboxClientService: DropboxClientService,
     @InjectModel(Denuncia.name)
     private denunciaModel: Model<Denuncia>,
-    @InjectModel(Sanciones.name)
-    private sancionesModel: Model<Sanciones>,
   ) {}
 
   async crear(createDenunciaDto: CrearDenunciaRequestDto) {
@@ -54,7 +50,6 @@ export class DenunciasService {
     const denunciaContieneContenidoOfensivo = false;
     // const denunciaContieneContenidoOfensivo = await this.verificarDenunciaContenidoOfensivo(createDenunciaDto);
     if (denunciaContieneContenidoOfensivo) {
-      this.registrarSancionContenidoOfensivo(createDenunciaDto);
       console.log('error titulo o descripcion contiene contenido ofensivo');
 
       return Error('error titulo o descripcion contiene contenido ofensivo');
@@ -84,7 +79,7 @@ export class DenunciasService {
     const denuncia = await this.denunciaModel
       .findOne({
         correo: cancelarDenunciaRequestDto.usuario,
-        hash: cancelarDenunciaRequestDto.hashCode,
+        hash: cancelarDenunciaRequestDto.hash,
       })
       .exec();
 
@@ -132,24 +127,6 @@ export class DenunciasService {
       .exec();
 
     return denunciasHash.length == 0;
-  }
-
-  private async registrarSancionContenidoOfensivo(
-    createDenunciaDto: CrearDenunciaRequestDto,
-  ) {
-    const fechaFinal = new Date();
-    fechaFinal.setDate(fechaFinal.getDate() + 11); // Add 1 day
-    fechaFinal.setHours(0, 0, 0, 0); // Set time to midnight
-
-    const crearSancionDto: CrearSancionDto = {
-      correo: createDenunciaDto.usuario,
-      motivo: 'Contenido Ofensivo',
-      createdAt: new Date(),
-      fechaFinal: fechaFinal,
-    };
-
-    const model = new this.sancionesModel(crearSancionDto);
-    const sancrionAlmacenada = await model.save();
   }
 
   private async verificarImagenesCorrespondeTipoDenuncia(
@@ -222,7 +199,7 @@ export class DenunciasService {
     // );
 
     const nuevaDenunciaDto: CrearDenunciaDto = new CrearDenunciaDto();
-    nuevaDenunciaDto.hashCode = hash;
+    nuevaDenunciaDto.hash = hash;
     nuevaDenunciaDto.correo = createDenunciaDto.usuario;
     nuevaDenunciaDto.titulo = createDenunciaDto.titulo;
     nuevaDenunciaDto.descripcion = createDenunciaDto.descripcion;

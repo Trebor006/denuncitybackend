@@ -1,5 +1,5 @@
 export class CrearDenunciaDto {
-  hashCode: string;
+  hash: string;
   correo: string;
 
   titulo: string;

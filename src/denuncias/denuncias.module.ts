@@ -11,13 +11,11 @@ import { BufferUtilService } from '../common/utils/buffer-util/buffer-util.servi
 import { HashCodeService } from '../common/utils/hash-code/hash-code.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Denuncia, DenunciaSchema } from '../schemas/denuncia.schema';
-import { Sanciones, SancionesSchema } from '../schemas/sancion.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Denuncia.name, schema: DenunciaSchema },
-      { name: Sanciones.name, schema: SancionesSchema },
     ]),
   ],
   controllers: [DenunciasController],
