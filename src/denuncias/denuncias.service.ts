@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { OpenaiService } from '../components/openai/openai.service';
 import { DropboxClientService } from '../components/dropbox-client/dropbox-client.service';
@@ -32,7 +36,7 @@ export class DenunciasService {
         'error cantidad maximo de registros por tipo de denuncia : ' +
           createDenunciaDto.tipoDenuncia,
       );
-      return Error('Maximo de denuncias permitidas excedido');
+      throw new BadRequestException('Maximo de denuncias permitidas excedido');
     }
 
     const hashGenerated: string =
@@ -43,21 +47,17 @@ export class DenunciasService {
     );
     if (!permitirRegistro) {
       console.log('error hash duplicado : ' + hashGenerated);
-      return Error('La denuncia ya se ha registrado');
+      throw new BadRequestException('La denuncia ya se ha registrado');
     }
 
-    //todo remove esto
-    const denunciaContieneContenidoOfensivo = false;
-    // const denunciaContieneContenidoOfensivo = await this.verificarDenunciaContenidoOfensivo(createDenunciaDto);
+    const denunciaContieneContenidoOfensivo =
+      await this.verificarDenunciaContenidoOfensivo(createDenunciaDto);
     if (denunciaContieneContenidoOfensivo) {
       console.log('error titulo o descripcion contiene contenido ofensivo');
-
-      // return Error('error titulo o descripcion contiene contenido ofensivo');
     }
 
-    //todo remove esto
-    const imagenCorrespondeTipoDenuncia = true;
-    // const imagenCorrespondeTipoDenuncia = await this.verificarImagenesCorrespondeTipoDenuncia(createDenunciaDto);
+    const imagenCorrespondeTipoDenuncia =
+      await this.verificarImagenesCorrespondeTipoDenuncia(createDenunciaDto);
     if (!imagenCorrespondeTipoDenuncia) {
       console.log(
         'error imagen no corresponde a tipo de denuncia : ' +
@@ -70,6 +70,7 @@ export class DenunciasService {
     const denunciaRegistrada = await this.procederRegistroDenuncia(
       createDenunciaDto,
       hashGenerated,
+      denunciaContieneContenidoOfensivo || imagenCorrespondeTipoDenuncia,
     );
 
     return denunciaRegistrada;
@@ -190,13 +191,12 @@ export class DenunciasService {
   private async procederRegistroDenuncia(
     createDenunciaDto: CrearDenunciaRequestDto,
     hash: string,
+    rechazarDenuncia: boolean,
   ) {
-    //todo borrar esto
-    const imageUrls = [];
-    // const imageUrls = await this.dropboxClientService.subirImagenes(
-    //   createDenunciaDto,
-    //   hash,
-    // );
+    const imageUrls = await this.dropboxClientService.subirImagenes(
+      createDenunciaDto,
+      hash,
+    );
 
     const nuevaDenunciaDto: CrearDenunciaDto = new CrearDenunciaDto();
     nuevaDenunciaDto.hash = hash;
@@ -206,7 +206,7 @@ export class DenunciasService {
     nuevaDenunciaDto.tipoDenuncia = createDenunciaDto.tipoDenuncia;
     nuevaDenunciaDto.lon = createDenunciaDto.lon;
     nuevaDenunciaDto.lat = createDenunciaDto.lat;
-    nuevaDenunciaDto.estado = 'PENDIENTE';
+    nuevaDenunciaDto.estado = rechazarDenuncia ? 'RECHAZADA' : 'PENDIENTE';
     nuevaDenunciaDto.imagenesUrls = imageUrls;
     nuevaDenunciaDto.createdAt = new Date();
 
