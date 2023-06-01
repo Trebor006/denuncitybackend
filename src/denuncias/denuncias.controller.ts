@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { DenunciasService } from './denuncias.service';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { DenunciasValidatorService } from './denuncias.validator.service';
@@ -16,10 +23,7 @@ export class DenunciasController {
     const resultValidation =
       this.denunciasValidatorService.validarDTO(crearDenunciaDto);
     if (resultValidation.length > 0) {
-      return {
-        success: false,
-        errores: resultValidation,
-      };
+      throw new BadRequestException('Datos invalidos');
     }
 
     const result = await this.denunciasService.crear(crearDenunciaDto);
