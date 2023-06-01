@@ -49,13 +49,11 @@ export class LoginController {
   }
 
   @Post('login')
-  async login(@Body() request: BaseRequest) {
-    let createLoginEventDto: LoginUsuarioDto;
+  async login(@Body() loginUsuarioDto: LoginUsuarioDto) {
     let promise: any;
-    createLoginEventDto = request.data as LoginUsuarioDto;
-    console.log('login :: ', { request });
+    console.log('login :: ', { loginUsuarioDto });
 
-    await this.loginService.login(createLoginEventDto).then(function (result) {
+    await this.loginService.login(loginUsuarioDto).then(function (result) {
       promise = result;
     });
     return this.generateResponse(promise);
