@@ -52,7 +52,7 @@ export class DenunciasService {
     if (denunciaContieneContenidoOfensivo) {
       console.log('error titulo o descripcion contiene contenido ofensivo');
 
-      return Error('error titulo o descripcion contiene contenido ofensivo');
+      // return Error('error titulo o descripcion contiene contenido ofensivo');
     }
 
     //todo remove esto
@@ -64,7 +64,7 @@ export class DenunciasService {
           createDenunciaDto.tipoDenuncia,
       );
 
-      return Error('error imagen no corresponde a tipo de denuncia');
+      // return Error('error imagen no corresponde a tipo de denuncia');
     }
 
     const denunciaRegistrada = await this.procederRegistroDenuncia(
@@ -204,6 +204,8 @@ export class DenunciasService {
     nuevaDenunciaDto.titulo = createDenunciaDto.titulo;
     nuevaDenunciaDto.descripcion = createDenunciaDto.descripcion;
     nuevaDenunciaDto.tipoDenuncia = createDenunciaDto.tipoDenuncia;
+    nuevaDenunciaDto.lon = createDenunciaDto.lon;
+    nuevaDenunciaDto.lat = createDenunciaDto.lat;
     nuevaDenunciaDto.estado = 'PENDIENTE';
     nuevaDenunciaDto.imagenesUrls = imageUrls;
     nuevaDenunciaDto.createdAt = new Date();
@@ -212,5 +214,15 @@ export class DenunciasService {
     const denunciaAlmacenada = await model.save();
 
     return denunciaAlmacenada;
+  }
+
+  async obtenerListaDenuncias(usuario: string) {
+    const denunciasPorUsuario = await this.denunciaModel
+      .find({
+        correo: usuario,
+      })
+      .exec();
+
+    return denunciasPorUsuario;
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { DenunciasService } from './denuncias.service';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { DenunciasValidatorService } from './denuncias.validator.service';
@@ -23,6 +23,13 @@ export class DenunciasController {
     }
 
     const result = await this.denunciasService.crear(crearDenunciaDto);
+
+    return result;
+  }
+
+  @Get()
+  async listarDenunciasPorUsuario(@Query('usuario') usuario: string) {
+    const result = await this.denunciasService.obtenerListaDenuncias(usuario);
 
     return result;
   }

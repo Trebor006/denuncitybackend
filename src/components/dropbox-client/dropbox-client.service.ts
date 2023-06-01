@@ -91,7 +91,11 @@ export class DropboxClientService {
       contents,
     });
 
-    return finalPath;
+    const sharedLink = await this.client.sharingCreateSharedLinkWithSettings({
+      path: finalPath,
+    });
+
+    return sharedLink.result.url.replace('dl=0', 'raw=1');
   }
 
   private async verificarFolder(path: string) {

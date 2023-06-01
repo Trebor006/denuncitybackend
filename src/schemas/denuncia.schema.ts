@@ -24,6 +24,12 @@ export class Denuncia {
   estado: string;
 
   @Prop({ required: true })
+  lon: string;
+
+  @Prop({ required: true })
+  lat: string;
+
+  @Prop({ required: true })
   imagenesUrls: string[];
 
   @Prop({ required: true })

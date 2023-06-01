@@ -4,6 +4,8 @@ export class CrearDenunciaDto {
 
   titulo: string;
   descripcion: string;
+  lon: string;
+  lat: string;
 
   tipoDenuncia: string;
   imagenesUrls: string[];
