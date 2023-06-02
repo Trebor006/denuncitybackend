@@ -134,7 +134,7 @@ export class DenunciasService {
     createDenunciaDto: CrearDenunciaRequestDto,
   ): Promise<boolean> {
     const resultados: boolean[] = await Promise.all(
-      createDenunciaDto.imagenesPrueba.map((imagen) => {
+      createDenunciaDto.imagenes.map((imagen) => {
         return this.verificarImagenCorrespondeTipoDenuncia(
           createDenunciaDto.tipoDenuncia,
           imagen,

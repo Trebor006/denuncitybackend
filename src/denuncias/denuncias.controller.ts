@@ -26,6 +26,12 @@ export class DenunciasController {
       throw new BadRequestException('Datos invalidos');
     }
 
+    crearDenunciaDto.imagenes = [
+      crearDenunciaDto.imagen1,
+      crearDenunciaDto.imagen2,
+      crearDenunciaDto.imagen3,
+    ];
+
     const result = await this.denunciasService.crear(crearDenunciaDto);
 
     return result;

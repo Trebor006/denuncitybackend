@@ -39,7 +39,7 @@ export class DropboxClientService {
     }
 
     const urlImagenes: string[] = await Promise.all(
-      createDenunciaDto.imagenesPrueba.map(async (imagen) => {
+      createDenunciaDto.imagenes.map(async (imagen) => {
         const url = await this.subirImagenBase64(
           imagen,
           this.hashCodeService.generarHashCode(imagen) + '.jpg',
