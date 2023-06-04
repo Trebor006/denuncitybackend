@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { OpenaiService } from '../components/openai/openai.service';
 import { DropboxClientService } from '../components/dropbox-client/dropbox-client.service';
@@ -14,6 +10,9 @@ import { Model } from 'mongoose';
 import { Denuncia } from '../schemas/denuncia.schema';
 import { CrearDenunciaDto } from './dto/crear-denuncia.dto';
 import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
+import { ErrorResponse } from '../common/dto/base/error-response.dto';
+import { ErrorCodes } from '../common/dto/base/ErrorCodes';
+import { BaseResponse } from '../common/dto/base/base-response.dto';
 
 @Injectable()
 export class DenunciasService {
@@ -28,6 +27,8 @@ export class DenunciasService {
   ) {}
 
   async crear(createDenunciaDto: CrearDenunciaRequestDto) {
+    let errors: ErrorResponse[] = [];
+
     const permitirRegistrar: boolean = await this.validarMaximoDenuncias(
       createDenunciaDto,
     );
@@ -36,7 +37,12 @@ export class DenunciasService {
         'error cantidad maximo de registros por tipo de denuncia : ' +
           createDenunciaDto.tipoDenuncia,
       );
-      throw new BadRequestException('Maximo de denuncias permitidas excedido');
+      errors.push(
+        ErrorResponse.generateError(
+          ErrorCodes.ERROR_MAXIMO_DENUNCIA,
+          'Maximo de denuncias permitidas excedido',
+        ),
+      );
     }
 
     const hashGenerated: string =
@@ -47,24 +53,48 @@ export class DenunciasService {
     );
     if (!permitirRegistro) {
       console.log('error hash duplicado : ' + hashGenerated);
-      throw new BadRequestException('La denuncia ya se ha registrado');
+      errors.push(
+        ErrorResponse.generateError(
+          ErrorCodes.ERROR_DENUNCIA_DUPLICADA,
+          'La denuncia ya se ha registrado',
+        ),
+      );
+    }
+
+    if (errors.length > 0) {
+      return BaseResponse.generateError(
+        'Error al registrar la denuncia',
+        errors,
+      );
     }
 
     const denunciaContieneContenidoOfensivo =
       await this.verificarDenunciaContenidoOfensivo(createDenunciaDto);
     if (denunciaContieneContenidoOfensivo) {
       console.log('error titulo o descripcion contiene contenido ofensivo');
+
+      errors.push(
+        ErrorResponse.generateError(
+          ErrorCodes.ERROR_CONTENIDO_OFENSIVO,
+          'Error titulo o descripcion contiene contenido ofensivo',
+        ),
+      );
     }
 
     const imagenCorrespondeTipoDenuncia =
       await this.verificarImagenesCorrespondeTipoDenuncia(createDenunciaDto);
     if (!imagenCorrespondeTipoDenuncia) {
       console.log(
-        'error imagen no corresponde a tipo de denuncia : ' +
+        'Error imagen no corresponde a tipo de denuncia : ' +
           createDenunciaDto.tipoDenuncia,
       );
 
-      // return Error('error imagen no corresponde a tipo de denuncia');
+      errors.push(
+        ErrorResponse.generateError(
+          ErrorCodes.ERROR_IMAGEN_NO_CORRESPONDE,
+          'Error imagen no corresponde a tipo de denuncia',
+        ),
+      );
     }
 
     const denunciaRegistrada = await this.procederRegistroDenuncia(
@@ -73,7 +103,20 @@ export class DenunciasService {
       denunciaContieneContenidoOfensivo || imagenCorrespondeTipoDenuncia,
     );
 
-    return denunciaRegistrada;
+    if (denunciaContieneContenidoOfensivo || imagenCorrespondeTipoDenuncia) {
+      return BaseResponse.generateOkResponse(
+        'La Denuncia ha sido registrada como Rechazada',
+        {
+          denuncia: denunciaRegistrada,
+          errors: errors,
+        },
+      );
+    } else {
+      return BaseResponse.generateOkResponse(
+        'Denuncia registrada satisfactoriamente',
+        denunciaRegistrada,
+      );
+    }
   }
 
   async cancelar(cancelarDenunciaRequestDto: CancelarDenunciaRequestDto) {

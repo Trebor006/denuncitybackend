@@ -2,7 +2,6 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { LoginUsuarioDto } from './dto/login-usuario.dto';
 import { RegistroUsuarioDto } from './dto/registro.usuario.dto';
-import { BaseRequest } from '../common/dto/base/base-request.dto';
 import { BaseResponse } from '../common/dto/base/base-response.dto';
 import { VerificarLoginUsuarioDto } from './dto/verificar.login.usuario.dto';
 import { ActualizarUsuarioDto } from './dto/actualizar.usuario.dto';
@@ -56,15 +55,6 @@ export class LoginController {
     await this.loginService.login(loginUsuarioDto).then(function (result) {
       promise = result;
     });
-    return this.generateResponse(promise);
-  }
-
-  private generateResponse(promise: any) {
-    let baseResponse = new BaseResponse();
-    baseResponse.statusCode = 0;
-    baseResponse.data = promise;
-    baseResponse.message = 'OK';
-
-    return baseResponse;
+    return BaseResponse.generateOkResponse('OK', promise);
   }
 }
