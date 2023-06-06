@@ -21,7 +21,7 @@ export class LoginController {
     return usuarioRegistrado;
   }
 
-  @Post('validar_validez_contrasena')
+  @Post('verificar_validez_contrasena')
   async validarValidezContrasena(
     @Body() verificarLoginUsuarioDto: VerificarLoginUsuarioDto,
   ) {
@@ -29,16 +29,18 @@ export class LoginController {
       ...verificarLoginUsuarioDto,
     });
 
-    const contrasenaValida = await this.loginService.validarValidezContrasena(
+    const renovarContrasena = await this.loginService.validarValidezContrasena(
       verificarLoginUsuarioDto,
     );
 
-    return contrasenaValida;
+    return renovarContrasena;
   }
 
-  @Post('actualizar-usuario')
-  async actualizarUsuario(@Body() actualizarUsuarioDto: ActualizarUsuarioDto) {
-    console.log('actualizarUsuario :: ', { ...actualizarUsuarioDto });
+  @Post('actualizar-password')
+  async actualizarContrasena(
+    @Body() actualizarUsuarioDto: ActualizarUsuarioDto,
+  ) {
+    console.log('actualizarContrasena :: ', { ...actualizarUsuarioDto });
 
     const usuarioActualizado = await this.loginService.actualizarUsuario(
       actualizarUsuarioDto,

@@ -100,10 +100,10 @@ export class DenunciasService {
     const denunciaRegistrada = await this.procederRegistroDenuncia(
       createDenunciaDto,
       hashGenerated,
-      denunciaContieneContenidoOfensivo || imagenCorrespondeTipoDenuncia,
+      denunciaContieneContenidoOfensivo || !imagenCorrespondeTipoDenuncia,
     );
 
-    if (denunciaContieneContenidoOfensivo || imagenCorrespondeTipoDenuncia) {
+    if (denunciaContieneContenidoOfensivo || !imagenCorrespondeTipoDenuncia) {
       return BaseResponse.generateOkResponse(
         'La Denuncia ha sido registrada como Rechazada',
         {
