@@ -73,8 +73,5 @@ jobs:
       - name: Push image to DO Container Registry
         run: docker push registry.digitalocean.com/denuncity-registry/denuncitybackend:1.0.0
 
-      - name: Remove old images from Container Registry
-        uses: ripplr-io/docr-image-remove@v1
-        with:
-          image_repository: registry.digitalocean.com/denuncity-registry/denuncitybackend # required
-          buffer_size: 10
+#      - name: Clean up old images
+#        run: echo "y" | doctl registry repository delete-manifests denuncity-registry/denuncitybackend --keep 1
