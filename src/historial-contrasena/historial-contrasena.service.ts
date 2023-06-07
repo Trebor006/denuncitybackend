@@ -37,7 +37,7 @@ export class HistorialContrasenaService {
     passwordHistory.save();
   }
 
-  async verificarRenovacionContrasena(correo: string): Promise<Date> {
+  async obtenerFechaDeUltimaActualizacion(correo: string): Promise<Date> {
     const oldPassword = await this.historialContrasenaModel
       .findOne({
         correo: correo,

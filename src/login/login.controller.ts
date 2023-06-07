@@ -40,7 +40,9 @@ export class LoginController {
   async actualizarContrasena(
     @Body() actualizarUsuarioDto: ActualizarUsuarioDto,
   ) {
-    console.log('actualizarContrasena :: ', { ...actualizarUsuarioDto });
+    console.log(
+      'actualizarContrasena :: ' + JSON.stringify(actualizarUsuarioDto),
+    );
 
     const usuarioActualizado = await this.loginService.actualizarUsuario(
       actualizarUsuarioDto,

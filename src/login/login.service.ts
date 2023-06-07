@@ -71,13 +71,13 @@ export class LoginService {
     const configuracionValidacionContrasenaDto =
       await this.configurationsService.obtenerConfiguracionValidarContrasena();
 
-    const fecha =
-      await this.passwordHistoryService.verificarRenovacionContrasena(
+    const fechaUltimaActualizacion =
+      await this.passwordHistoryService.obtenerFechaDeUltimaActualizacion(
         verificarLoginUsuarioDto.correo,
       );
 
     const renovar = this.difiereTiempoMaximo(
-      fecha,
+      fechaUltimaActualizacion,
       configuracionValidacionContrasenaDto.limite,
       configuracionValidacionContrasenaDto.medida,
     );
@@ -86,7 +86,7 @@ export class LoginService {
   }
 
   difiereTiempoMaximo(
-    fechaA: Date,
+    fechaUltimaActualizacion: Date,
     tiempoMaximo: number,
     unidadTiempo: string,
   ): boolean {
@@ -113,7 +113,7 @@ export class LoginService {
     }
 
     // Comparar las fechas
-    return fechaA.getTime() > fechaLimite.getTime();
+    return fechaUltimaActualizacion.getTime() < fechaLimite.getTime();
   }
 
   async actualizarUsuario(verificarLoginUsuarioDto: ActualizarUsuarioDto) {
