@@ -10,6 +10,7 @@ import { DenunciasService } from './denuncias.service';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { DenunciasValidatorService } from './denuncias.validator.service';
 import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
+import { BaseResponse } from '../common/dto/base/base-response.dto';
 
 @Controller('denuncias')
 export class DenunciasController {
@@ -23,14 +24,11 @@ export class DenunciasController {
     const resultValidation =
       this.denunciasValidatorService.validarDTO(crearDenunciaDto);
     if (resultValidation.length > 0) {
-      throw new BadRequestException('Datos invalidos');
+      return BaseResponse.generateError(
+        'Error al registrar la denuncia, Datos Incorrectos',
+        resultValidation,
+      );
     }
-
-    crearDenunciaDto.imagenes = [
-      crearDenunciaDto.imagen1,
-      crearDenunciaDto.imagen2,
-      crearDenunciaDto.imagen3,
-    ];
 
     const result = await this.denunciasService.crear(crearDenunciaDto);
 

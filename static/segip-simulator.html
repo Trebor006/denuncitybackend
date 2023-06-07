@@ -135,7 +135,7 @@
             event.preventDefault();
 
             var formData = new FormData(form);
-            fetch("http://localhost:8099/segip/api/persons/registrar", {
+            fetch("https://ms-segip-simulation-app-428ac.ondigitalocean.app/segip/api/persons/registrar", {
                 method: "POST",
                 body: formData
             })
