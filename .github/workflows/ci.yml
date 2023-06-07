@@ -54,10 +54,10 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags: trebor006/denuncitybackend:1.0.0
+          tags: trebor006/denuncitybackend:latest
 
       - name: Pull image from Docker Hub
-        run: docker pull trebor006/denuncitybackend:1.0.0
+        run: docker pull trebor006/denuncitybackend:latest
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -69,6 +69,6 @@ jobs:
 
       - name: Tag image
         run:
-          docker tag trebor006/denuncitybackend:1.0.0 registry.digitalocean.com/denuncity-registry/denuncitybackend:1.0.0
+          docker tag trebor006/denuncitybackend:latest registry.digitalocean.com/denuncity-registry/denuncitybackend:1.0.0
       - name: Push image to DO Container Registry
         run: docker push registry.digitalocean.com/denuncity-registry/denuncitybackend:1.0.0
