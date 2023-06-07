@@ -76,5 +76,5 @@ jobs:
       - name: Remove old images from Container Registry
         uses: ripplr-io/docr-image-remove@v1
         with:
-          image_repository: denuncitybackend # required
+          image_repository: registry.digitalocean.com/denuncity-registry/denuncitybackend # required
           buffer_size: 10
