@@ -24,10 +24,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.18.0]
-        os: [ubuntu-latest]
+        node-version: [ 16.18.0 ]
+        os: [ ubuntu-latest ]
 
-    runs-on:  ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -53,8 +53,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          push: false
-          tags: denuncitybackend:1.0.0
+          push: true
+          tags: trebor006/denuncitybackend:1.0.0
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -66,6 +66,6 @@ jobs:
 
       - name: Tag image
         run:
-          docker tag denuncitybackend:1.0.0 registry.digitalocean.com/denuncity-registry/denuncitybackend:1.0.0
+          docker tag trebor006/denuncitybackend:1.0.0 registry.digitalocean.com/denuncity-registry/denuncitybackend:1.0.0
       - name: Push image to DO Container Registry
         run: docker push registry.digitalocean.com/denuncity-registry/denuncitybackend:1.0.0
