@@ -17,7 +17,7 @@ export class DropboxClientService {
   ) {
     this.BASE_URL = this.configService.get<string>('DROPBOX_BASE_URL');
     this.client = new Dropbox({
-      accessToken: this.configService.get<string>('DROPBOX_API_KEY'),
+      accessToken: process.env.DROPBOX_API_KEY,
     });
   }
 
