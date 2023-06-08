@@ -21,14 +21,14 @@ export class DenunciasController {
 
   @Post()
   async crear(@Body() crearDenunciaDto: CrearDenunciaRequestDto) {
-    const resultValidation =
-      this.denunciasValidatorService.validarDTO(crearDenunciaDto);
-    if (resultValidation.length > 0) {
-      return BaseResponse.generateError(
-        'Error al registrar la denuncia, Datos Incorrectos',
-        resultValidation,
-      );
-    }
+    // const resultValidation =
+    //   this.denunciasValidatorService.validarDTO(crearDenunciaDto);
+    // if (resultValidation.length > 0) {
+    //   return BaseResponse.generateError(
+    //     'Error al registrar la denuncia, Datos Incorrectos',
+    //     resultValidation,
+    //   );
+    // }
 
     const result = await this.denunciasService.crear(crearDenunciaDto);
 

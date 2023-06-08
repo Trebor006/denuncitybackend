@@ -17,14 +17,14 @@ export class DenunciasValidatorService {
       );
     }
 
-    // Validación del campo "imagenesPrueba"
+    // Validación del campo "imagenes"
     if (!Array.isArray(dto.imagenes) || dto.imagenes.length === 0) {
       errores.push(
-        'El campo "imagenesPrueba" debe ser un array y contener al menos una imagen.',
+        'El campo "imagenes" debe ser un array y contener al menos una imagen.',
       );
     } else if (dto.imagenes.length > 3) {
       errores.push(
-        'El campo "imagenesPrueba" debe contener como máximo tres imagenes.',
+        'El campo "imagenes" debe contener como máximo tres imagenes.',
       );
     }
 

@@ -123,7 +123,7 @@ export class LoginService {
       verificarLoginUsuarioDto.correo,
       nuevaContrasena,
     );
-    if (contrasenaValida) {
+    if (!contrasenaValida) {
       throw new Error();
     }
 

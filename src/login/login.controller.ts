@@ -36,7 +36,7 @@ export class LoginController {
     return renovarContrasena;
   }
 
-  @Post('actualizar-password')
+  @Post('actualizar_contrasena')
   async actualizarContrasena(
     @Body() actualizarUsuarioDto: ActualizarUsuarioDto,
   ) {
