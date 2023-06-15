@@ -42,7 +42,7 @@ export class DenunciasController {
     return result;
   }
 
-  @Get('/listarall')
+  @Get('listarall')
   async listarAllDenuncias(
     @Query('estado') estado: string,
     @Query('fechaInicio') fechaInicio: string,
@@ -64,14 +64,14 @@ export class DenunciasController {
     return result;
   }
 
-  @Get('/listarportipo')
+  @Get('listarportipo')
   async listarDenunciasPorGruposTipoDenuncia() {
     const result = await this.denunciasService.obtenerListaDenunciasPorTipo();
 
     return result;
   }
 
-  @Post('/cancelar')
+  @Post('cancelar')
   async cancelarDenuncia(
     @Body() cancelarDenunciaRequestDto: CancelarDenunciaRequestDto,
   ) {
