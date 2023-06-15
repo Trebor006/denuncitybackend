@@ -1,0 +1,599 @@
+{
+	"info": {
+		"_postman_id": "dbc4be3d-91cb-4001-b684-4d38b9af4785",
+		"name": "Topicos 2023",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "354982"
+	},
+	"item": [
+		{
+			"name": "Openai",
+			"item": [
+				{
+					"name": "Llamar al chat",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\": \"cual es la capital de Bolivia?\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3002/chats/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3002",
+							"path": [
+								"chats",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Segip",
+			"item": [
+				{
+					"name": "Get Person By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8099/segip/api/persons/7842296",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8099",
+							"path": [
+								"segip",
+								"api",
+								"persons",
+								"7842296"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "old",
+			"item": [
+				{
+					"name": "Iniciar Sesion By Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"\",\r\n    \"data\": {        \r\n        \"token\": \"npzTOK10brMMKW7O2wiWX1p0xbCylAv2EdJQ94ildl59mq3qG0dw1pckPKSpusIkpGqT6YEPIXJ8Zfv3mN01tr\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/tokenlogin",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"tokenlogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Iniciar Sesion",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"\",\r\n    \"data\": {\r\n        \"username\": \"trebor006\",\r\n        \"password\": \"123456789\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/users/login",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Validate User By Segip",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ci\": \"7842296\",    \r\n    \"ci2\": \"7842296\",    \r\n    \"photo\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/usuario/validar",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"usuario",
+						"validar"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Validate User By Segip",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ci\": \"7842296\",    \r\n    \"ci2\": \"7842296\",    \r\n    \"photo\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/usuario/validar",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"usuario",
+								"validar"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "162"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"a2-zQ4dyyAacdAheIbN6KmWKX1P+OU\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 11 May 2023 05:33:06 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"nombre\": \"robert\",\n    \"apellido\": \"cabrera\",\n    \"direccion\": \"Barrio 30 de Agosto\",\n    \"telefono\": \"73655582\",\n    \"carnet\": \"7842296\",\n    \"fechaNacimiento\": \"2023-05-11T02:57:13.314716\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Validar Codigo Verificacion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"correo\": \"clrobert.06@gmail.com\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/codigoVerificacion/generar",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"codigoVerificacion",
+						"generar"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Validar Codigo Verificacion",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"correo\": \"clrobert.06@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/codigoVerificacion/generar",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"codigoVerificacion",
+								"generar"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 11 May 2023 05:40:08 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Generar Codigo Verificacion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"correo\": \"clrobert.06@gmail.com\",\r\n    \"codigo\": \"104383\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/codigoVerificacion/validar",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"codigoVerificacion",
+						"validar"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Generar Codigo Verificacion",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"correo\": \"clrobert.06@gmail.com\",\r\n    \"codigo\": \"685405\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/codigoVerificacion/validar",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"codigoVerificacion",
+								"validar"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/html; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "4"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"4-X/5TO4MPCKAyY0ipFgr6/IraRNs\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 11 May 2023 05:40:26 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "true"
+				}
+			]
+		},
+		{
+			"name": "Registrar Usuario",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{        \r\n    \"nombre\": \"Robert\",\r\n    \"apellido\": \"Cabrera\",\r\n    \"direccion\": \"Barrio 30 de Agosto\",\r\n    \"telefono\": \"73655582\",\r\n    \"carnet\": \"7842296\",\r\n    \"fechaNacimiento\": \"19/01/1990\",\r\n    \"correo\": \"clrobert.06@gmail.com\",\r\n    \"contrasena\": \"1234567891\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/usuario/registrar",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"usuario",
+						"registrar"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Registrar Usuario",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{        \r\n    \"nombre\": \"Robert\",\r\n    \"apellido\": \"Cabrera\",\r\n    \"direccion\": \"Barrio 30 de Agosto\",\r\n    \"telefono\": \"73655582\",\r\n    \"carnet\": \"7842296\",\r\n    \"fechaNacimiento\": \"19/01/1990\",\r\n    \"correo\": \"clrobert.06@gmail.com\",\r\n    \"contrasena\": \"1234567891\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/usuario/registrar",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"usuario",
+								"registrar"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "303"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"12f-cQV/Q5wJ8OC1Wk2/2WVt1RNC35k\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 11 May 2023 16:04:09 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"nombre\": \"Roberta\",\n    \"apellido\": \"Cabreraa\",\n    \"direccion\": \"Barrio 30 de Agosto\",\n    \"telefono\": \"73655582\",\n    \"carnet\": \"7842296\",\n    \"fechaNacimiento\": \"19/01/1990\",\n    \"correo\": \"clrobert3.06@gmail.com\",\n    \"contrasena\": \"523aa18ecb892c51fbdbe28c57e10a92419e0a73e8931e578b98baffccf99cdd\",\n    \"_id\": \"645d11f94e33e782f43e4c53\",\n    \"__v\": 0\n}"
+				}
+			]
+		},
+		{
+			"name": "Validar Contrasena",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{        \r\n    \"correo\": \"clrobert.06@gmail.com\"  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3001/usuario/validar_validez_contrasena",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"usuario",
+						"validar_validez_contrasena"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Validar Contrasena",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{        \r\n    \"correo\": \"clrobert.06@gmail.com\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3001/usuario/validar_validez_contrasena",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"usuario",
+								"validar_validez_contrasena"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "html",
+					"header": [
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/html; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "5"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"5-fLbvuYullyqbUJDcLlF/4U0SywQ\""
+						},
+						{
+							"key": "Date",
+							"value": "Thu, 11 May 2023 16:04:32 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "false"
+				}
+			]
+		}
+	]
+}

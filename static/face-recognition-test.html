@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Reconocimiento Facial</title>
+  </head>
+  <body>
+    <h1>Detectar Rostros</h1>
+    <form id="formDetect" enctype="multipart/form-data" method="post" action="https://ms-segip-simulation-app-428ac.ondigitalocean.app/detectFaces">
+      <input type="file" name="file" />
+      <br />
+      <input type="submit" value="Detectar Rostros" />
+    </form>
+    <div id="resultsDetect"></div>
+    <br>
+    <hr>
+    <br>
+    <h1>Comparar Rostros</h1>
+    <form id="formCompare" enctype="multipart/form-data" method="post" action="https://ms-segip-simulation-app-428ac.ondigitalocean.app/compareFaces">
+      <input type="file" name="file1" />
+      <br>
+      <input type="file" name="file2" />
+      <br />
+      <input type="submit" value="Detectar Rostros" />
+    </form>
+    <div id="resultsCompare"></div>
+    <script src="face-recognition-test.js"></script>
+  </body>
+</html>

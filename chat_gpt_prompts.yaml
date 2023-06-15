@@ -1,0 +1,22 @@
+- code: VERIFICACION_CONTENIDO_IMAGEN
+  value: |
+    necesito que respondas con "true" o "false" para que yo pueda parsear a boolean tu respuesta 
+    dada una lista de valores y porcentajes obtenidos de clarifai crees que se refiere a un tema que tenga que ver con "{0}"
+    {1}
+    solo responde en el formato que te pedi, no necesito ninguna explicacion
+
+- code: VERIFICACION_CONTENIDO_OFENSIVO
+  value: |
+    necesito que respondas con "true" o "false" para que yo pueda parsear a boolean tu respuesta
+    analiza el siguiente texto y dime si contiene texto ofensivo. "{0}"
+    solo responde en el formato que te pedi, no necesito ninguna explicacion
+
+- code: VERIFICACION_CONTENIDO_OFENSIVO_EXTENDED
+  value: |
+    Necesito que respondas con la siguiente estructura para que pueda parsear tu respuesta
+    {
+    "contenidoOfensivo": true o false,
+    "gravedadContenido": "", "leve", "medio" o "grave" 
+    }
+    analiza el siguiente texto y dime si contiene texto ofensivo. "{0}"
+    solo responde en el formato que te pedi, no necesito ninguna explicacion
