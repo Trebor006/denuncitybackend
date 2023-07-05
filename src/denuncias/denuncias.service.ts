@@ -14,7 +14,7 @@ import { ErrorResponse } from '../common/dto/base/error-response.dto';
 import { ErrorCodes } from '../common/dto/base/ErrorCodes';
 import { BaseResponse } from '../common/dto/base/base-response.dto';
 import { DenunciaDto } from '../common/dto/denuncia-dto';
-import { TipoDenuncia } from '../common/dto/tipo-denuncia';
+import { TipoDenunciasService } from '../configurationsresources/tipo-denuncias/tipo-denuncias.service';
 
 @Injectable()
 export class DenunciasService {
@@ -24,6 +24,7 @@ export class DenunciasService {
     private promptsService: PromptsService,
     private openaiService: OpenaiService,
     private dropboxClientService: DropboxClientService,
+    private tipoDenunciasService: TipoDenunciasService,
     @InjectModel(Denuncia.name)
     private denunciaModel: Model<Denuncia>,
   ) {}
@@ -341,14 +342,8 @@ export class DenunciasService {
     return denuncias;
   }
 
-  private mapearDenuncias(denuncias: Denuncia[]): DenunciaDto[] {
-    const tiposDenuncias: TipoDenuncia[] = [
-      { tipo: 'Alumbrado', color: 'yellow' },
-      { tipo: 'Basura acumulada', color: 'black' },
-      { tipo: 'Baches', color: 'brown' },
-      { tipo: 'Fugas de agua', color: 'blue' },
-      { tipo: 'Plazas descuidadas', color: 'green' },
-    ];
+  private async mapearDenuncias(denuncias: Denuncia[]): Promise<DenunciaDto[]> {
+    const tiposDenuncias = await this.tipoDenunciasService.mapToTipoDenuncia();
 
     return denuncias.map((denuncia) => {
       const tipoDenuncia = tiposDenuncias.find(

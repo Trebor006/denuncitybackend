@@ -11,11 +11,23 @@ import { BufferUtilService } from '../common/utils/buffer-util/buffer-util.servi
 import { HashCodeService } from '../common/utils/hash-code/hash-code.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Denuncia, DenunciaSchema } from '../schemas/denuncia.schema';
+import { TipoDenunciasService } from '../configurationsresources/tipo-denuncias/tipo-denuncias.service';
+import {
+  TipoDenuncias,
+  TipoDenunciasSchema,
+} from '../schemas/tipo-denuncia.schema';
+import {
+  Departamento,
+  DepartamentoSchema,
+} from '../schemas/departamento.schema';
+import { DepartamentosService } from '../configurationsresources/departamentos/departamentos.service';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Denuncia.name, schema: DenunciaSchema },
+      { name: TipoDenuncias.name, schema: TipoDenunciasSchema },
+      { name: Departamento.name, schema: DepartamentoSchema },
     ]),
   ],
   controllers: [DenunciasController],
@@ -29,6 +41,8 @@ import { Denuncia, DenunciaSchema } from '../schemas/denuncia.schema';
     ConfigService,
     BufferUtilService,
     HashCodeService,
+    TipoDenunciasService,
+    DepartamentosService,
   ],
 })
 export class DenunciasModule {}

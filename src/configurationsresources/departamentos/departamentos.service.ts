@@ -22,7 +22,7 @@ export class DepartamentosService {
 
     if (departamento != null) {
       throw new Error(
-        'No se puede registrar debido a que ya existe con un departamento con ese nombre',
+        'No se puede registrar debido a que ya existe un departamento con ese nombre',
       );
     }
 
