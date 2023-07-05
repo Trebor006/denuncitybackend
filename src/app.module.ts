@@ -25,6 +25,9 @@ import { ClarifaiModule } from './components/clarifai/clarifai.module';
 import { OpenaiModule } from './components/openai/openai.module';
 import { DenunciasModule } from './denuncias/denuncias.module';
 import { HashCodeService } from './common/utils/hash-code/hash-code.service';
+import { DepartamentosModule } from './configurationsresources/departamentos/departamentos.module';
+import { TipoDenunciasModule } from './configurationsresources/tipo-denuncias/tipo-denuncias.module';
+import { FuncionariosModule } from './configurationsresources/funcionarios/funcionarios.module';
 
 @Module({
   imports: [
@@ -71,6 +74,9 @@ import { HashCodeService } from './common/utils/hash-code/hash-code.service';
     ClarifaiModule,
     OpenaiModule,
     DenunciasModule,
+    DepartamentosModule,
+    TipoDenunciasModule,
+    FuncionariosModule,
   ],
   controllers: [AppController],
   providers: [
