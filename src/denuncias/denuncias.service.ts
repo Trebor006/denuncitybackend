@@ -304,7 +304,7 @@ export class DenunciasService {
       tipoDenuncia,
     );
 
-    const denunciasDto = this.mapearDenuncias(denuncias);
+    const denunciasDto = await this.mapearDenuncias(denuncias);
 
     return denunciasDto;
   }
@@ -329,8 +329,15 @@ export class DenunciasService {
     }
 
     if (fechaFin) {
+      const fecha = new Date(fechaFin);
+
+      fecha.setHours(23);
+      fecha.setMinutes(59);
+      fecha.setSeconds(59);
+      fecha.setMilliseconds(999);
+
       // @ts-ignore
-      query = query.where('createdAt').lte(new Date(fechaFin));
+      query = query.where('createdAt').lte(fecha);
     }
 
     if (tipoDenuncia) {
@@ -364,21 +371,28 @@ export class DenunciasService {
     }
 
     if (fechaFin) {
+      const fecha = new Date(fechaFin);
+
+      fecha.setHours(23);
+      fecha.setMinutes(59);
+      fecha.setSeconds(59);
+      fecha.setMilliseconds(999);
+
       // @ts-ignore
-      query = query.where('createdAt').lte(new Date(fechaFin));
+      query = query.where('createdAt').lte(fecha);
     }
 
     if (tipoDenuncia) {
       query = query.where('tipoDenuncia', tipoDenuncia);
     }
 
-    const [denuncias, totalDenuncias] = await Promise.all([
-      query.skip(skip).limit(porPagina).exec(),
+    const [denunciasSaved, totalDenuncias] = await Promise.all([
+      query.sort({ createdAt: -1 }).skip(skip).limit(porPagina).exec(),
       this.denunciaModel.countDocuments().exec(),
     ]);
 
     const totalPaginas = Math.ceil(totalDenuncias / porPagina);
-
+    const denuncias = await this.mapearDenuncias(denunciasSaved);
     return { denuncias, totalPaginas };
   }
 
