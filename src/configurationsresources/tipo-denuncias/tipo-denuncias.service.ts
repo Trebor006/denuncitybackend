@@ -71,4 +71,14 @@ export class TipoDenunciasService {
 
     return tiposDenuncias;
   }
+
+  async buscar(id: string) {
+    const tipoDenuncia = await this.tipoDenunciaModel
+      .findOne({
+        id: id,
+      })
+      .exec();
+
+    return tipoDenuncia;
+  }
 }

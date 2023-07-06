@@ -342,6 +342,46 @@ export class DenunciasService {
     return denuncias;
   }
 
+  async obtenerDenunciasPaginadas(
+    estado: string,
+    fechaInicio: string,
+    fechaFin: string,
+    tipoDenuncia: string,
+    pagina: number,
+    porPagina: number,
+  ) {
+    const skip = (pagina - 1) * porPagina;
+
+    let query = this.denunciaModel.find();
+
+    if (estado) {
+      query = query.where('estado', estado);
+    }
+
+    if (fechaInicio) {
+      // @ts-ignore
+      query = query.where('createdAt').gte(new Date(fechaInicio));
+    }
+
+    if (fechaFin) {
+      // @ts-ignore
+      query = query.where('createdAt').lte(new Date(fechaFin));
+    }
+
+    if (tipoDenuncia) {
+      query = query.where('tipoDenuncia', tipoDenuncia);
+    }
+
+    const [denuncias, totalDenuncias] = await Promise.all([
+      query.skip(skip).limit(porPagina).exec(),
+      this.denunciaModel.countDocuments().exec(),
+    ]);
+
+    const totalPaginas = Math.ceil(totalDenuncias / porPagina);
+
+    return { denuncias, totalPaginas };
+  }
+
   private async mapearDenuncias(denuncias: Denuncia[]): Promise<DenunciaDto[]> {
     const tiposDenuncias = await this.tipoDenunciasService.mapToTipoDenuncia();
 

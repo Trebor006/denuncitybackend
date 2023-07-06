@@ -46,4 +46,14 @@ export class DepartamentosService {
 
     return departamentos;
   }
+
+  async buscar(id: string) {
+    const departamentos = await this.departamentoModel
+      .findOne({
+        id: id,
+      })
+      .exec();
+
+    return departamentos;
+  }
 }

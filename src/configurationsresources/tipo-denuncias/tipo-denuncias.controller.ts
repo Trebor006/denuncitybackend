@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { TipoDenunciasService } from './tipo-denuncias.service';
 import { CreateTipoDenunciaDto } from './dto/create-tipo-denuncia.dto';
@@ -22,5 +23,12 @@ export class TipoDenunciasController {
   @Get()
   obtenerRegistros() {
     return this.tipoDenunciasService.obtenerRegistros();
+  }
+
+  @Get('buscar')
+  async buscar(@Query('id') id: string) {
+    const tipoDenuncia = await this.tipoDenunciasService.buscar(id);
+
+    return tipoDenuncia;
   }
 }

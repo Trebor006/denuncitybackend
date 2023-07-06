@@ -64,6 +64,34 @@ export class DenunciasController {
     return result;
   }
 
+  @Get('busquedaPaginada')
+  async busquedaPaginada(
+    @Query('estado') estado: string,
+    @Query('fechaInicio') fechaInicio: string,
+    @Query('fechaFin') fechaFin: string,
+    @Query('tipoDenuncia') tipoDenuncia: string,
+    @Query('pagina') pagina: number,
+    @Query('porPagina') porPagina: number,
+  ) {
+    console.log('estado : ' + estado);
+    console.log('fechaInicio : ' + fechaInicio);
+    console.log('fechaFin : ' + fechaFin);
+    console.log('tipoDenuncia : ' + tipoDenuncia);
+    console.log('pagina : ' + pagina);
+    console.log('porPagina : ' + porPagina);
+
+    const result = await this.denunciasService.obtenerDenunciasPaginadas(
+      estado,
+      fechaInicio,
+      fechaFin,
+      tipoDenuncia,
+      pagina,
+      porPagina,
+    );
+
+    return result;
+  }
+
   @Get('listarportipo')
   async listarDenunciasPorGruposTipoDenuncia() {
     const result = await this.denunciasService.obtenerListaDenunciasPorTipo();

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { DepartamentosService } from './departamentos.service';
 import { CrearDepartamentoDto } from './dto/crear-departamento.dto';
 
@@ -20,5 +20,12 @@ export class DepartamentosController {
     const departamentos = await this.departmentsService.obtenerRegistros();
 
     return departamentos;
+  }
+
+  @Get('buscar')
+  async buscar(@Query('id') id: string) {
+    const departamento = await this.departmentsService.buscar(id);
+
+    return departamento;
   }
 }
