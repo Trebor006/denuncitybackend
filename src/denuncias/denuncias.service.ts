@@ -428,4 +428,25 @@ export class DenunciasService {
 
     return `${dia}/${mes}/${ano}`;
   }
+
+  async buscar(id: string) {
+    const denuncia = await this.denunciaModel
+      .findOne({
+        hash: id,
+      })
+      .exec();
+
+    return {
+      _id: denuncia.hash,
+      correo: denuncia.correo,
+      titulo: denuncia.titulo,
+      descripcion: denuncia.descripcion,
+      tipoDenuncia: denuncia.tipoDenuncia,
+      estado: denuncia.estado,
+      imagenesUrls: denuncia.imagenesUrls,
+      lon: denuncia.lon,
+      lat: denuncia.lat,
+      createdAt: this.parseDate(denuncia.createdAt),
+    };
+  }
 }

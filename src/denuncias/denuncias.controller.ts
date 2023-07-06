@@ -92,6 +92,15 @@ export class DenunciasController {
     return result;
   }
 
+  @Get('buscar')
+  async buscar(@Query('id') id: string) {
+    console.log('id : ' + id);
+
+    const result = await this.denunciasService.buscar(id);
+
+    return result;
+  }
+
   @Get('listarportipo')
   async listarDenunciasPorGruposTipoDenuncia() {
     const result = await this.denunciasService.obtenerListaDenunciasPorTipo();
