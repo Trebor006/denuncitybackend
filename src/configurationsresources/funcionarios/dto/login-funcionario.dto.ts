@@ -1,4 +1,4 @@
-export class CreateFuncionarioDto {
+export class LoginFuncionarioDto {
   correo: string;
   contrasena: string;
 }

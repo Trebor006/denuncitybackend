@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { HashCodeService } from '../../common/utils/hash-code/hash-code.service';
 import { DepartamentosService } from '../departamentos/departamentos.service';
 import { Funcionario } from '../../schemas/funcionario.schema';
+import { LoginFuncionarioDto } from './dto/login-funcionario.dto';
 
 @Injectable()
 export class FuncionariosService {
@@ -56,9 +57,42 @@ export class FuncionariosService {
     return funcionario;
   }
 
-  login(createFuncionarioDto: CreateFuncionarioDto) {
-    return {
-      success: true,
-    };
+  async login(loginFuncionarioDto: LoginFuncionarioDto) {
+    const funcionario = await this.funcionarioModel
+      .findOne({
+        correo: loginFuncionarioDto.correo,
+        ci: loginFuncionarioDto.contrasena,
+      })
+      .exec();
+
+    if (funcionario != null) {
+      const departamentos = await this.departamentosService.obtenerRegistros();
+      const departamento = departamentos.find(
+        (departamento) => departamento.id === funcionario.departamento,
+      );
+
+      return {
+        success: true,
+        data: {
+          id: funcionario.id,
+          apellido: funcionario.apellido,
+          celular: funcionario.celular,
+          ci: funcionario.ci,
+          correo: funcionario.correo,
+          nombre: funcionario.nombre,
+          departamento: funcionario.departamento,
+          createdAt: funcionario.createdAt,
+          nombreDepartamento: departamento.nombre,
+        },
+      };
+    } else {
+      return {
+        success: false,
+      };
+    }
+  }
+
+  getRandomBoolean(): boolean {
+    return Math.random() < 0.5;
   }
 }

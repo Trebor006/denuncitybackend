@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { FuncionariosService } from './funcionarios.service';
 import { CreateFuncionarioDto } from './dto/create-funcionario.dto';
+import { LoginFuncionarioDto } from './dto/login-funcionario.dto';
 
 @Controller('funcionarios')
 export class FuncionariosController {
@@ -31,8 +32,8 @@ export class FuncionariosController {
   }
 
   @Post('login')
-  login(@Body() createFuncionarioDto: CreateFuncionarioDto) {
+  login(@Body() loginFuncionarioDto: LoginFuncionarioDto) {
     console.log('login funcionario!!!');
-    return this.funcionariosService.login(createFuncionarioDto);
+    return this.funcionariosService.login(loginFuncionarioDto);
   }
 }
