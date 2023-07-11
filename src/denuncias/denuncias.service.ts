@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Query } from '@nestjs/common';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { OpenaiService } from '../components/openai/openai.service';
 import { DropboxClientService } from '../components/dropbox-client/dropbox-client.service';
@@ -356,6 +356,8 @@ export class DenunciasService {
     tipoDenuncia: string,
     pagina: number,
     porPagina: number,
+    ordenadoPor: string,
+    ordenadoDir: number,
   ) {
     const skip = (pagina - 1) * porPagina;
 
@@ -386,8 +388,13 @@ export class DenunciasService {
       query = query.where('tipoDenuncia', tipoDenuncia);
     }
 
+    const sortField: string = ordenadoPor;
+    const sortQuery: { [key: string]: any } = {};
+    sortQuery[sortField] = ordenadoDir;
+
     const [denunciasSaved, totalDenuncias] = await Promise.all([
-      query.sort({ createdAt: -1 }).skip(skip).limit(porPagina).exec(),
+      // @ts-ignore
+      query.sort(sortQuery).skip(skip).limit(porPagina).exec(),
       this.denunciaModel.countDocuments().exec(),
     ]);
 
