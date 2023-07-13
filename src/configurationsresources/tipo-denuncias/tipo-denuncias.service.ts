@@ -62,6 +62,27 @@ export class TipoDenunciasService {
     return tipoDenuncias;
   }
 
+  async obtenerRegistrosFiltrados(departamento: string) {
+    const tipoDenuncias = await this.tipoDenunciaModel
+      .find({ departamento })
+      .exec();
+    let departamentos = await this.departamentosService.obtenerRegistros();
+
+    tipoDenuncias.forEach((tipoDenuncia) => {
+      const departamento = departamentos.find(
+        (departamento) => departamento.id === tipoDenuncia.departamento,
+      );
+
+      if (departamento) {
+        // Realizar las operaciones que necesites con el departamento encontrado
+        console.log(departamento);
+        tipoDenuncia.departamento = departamento.nombre;
+      }
+    });
+
+    return tipoDenuncias;
+  }
+
   async mapToTipoDenuncia(): Promise<TipoDenuncia[]> {
     const denuncias = await this.obtenerRegistros();
     const tiposDenuncias = denuncias.map((denuncia) => ({

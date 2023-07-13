@@ -26,6 +26,7 @@ import { DepartamentosService } from '../configurationsresources/departamentos/d
 import { Departamento } from '../schemas/departamento.schema';
 import { MyGateway } from '../MyGateway';
 import { TipoDenuncia } from '../common/dto/tipo-denuncia';
+import { TipoDenuncias } from '../schemas/tipo-denuncia.schema';
 
 @Injectable()
 export class DenunciasService {
@@ -42,6 +43,8 @@ export class DenunciasService {
     @InjectModel(Denuncia.name) private denunciaModel: Model<Denuncia>,
     @InjectModel(TokenDispositivo.name)
     private tokenDispositivoModel: Model<TokenDispositivo>,
+    @InjectModel(TipoDenuncias.name)
+    private tipoDenunciaModel: Model<TipoDenuncias>,
     private myGateway: MyGateway,
   ) {}
 
@@ -379,6 +382,7 @@ export class DenunciasService {
     porPagina: number,
     ordenadoPor: string,
     ordenadoDir: number,
+    departamento: string,
   ) {
     const skip = (pagina - 1) * porPagina;
 
@@ -414,6 +418,12 @@ export class DenunciasService {
     if (tipoDenuncia) {
       query = query.where('tipoDenuncia', tipoDenuncia);
       queryCount = queryCount.where('tipoDenuncia', tipoDenuncia);
+    } else {
+      const tpd = await this.tipoDenunciaModel.find({ departamento }).exec();
+      const map: string[] = tpd.map((tp) => tp.nombre);
+
+      query = query.where('tipoDenuncia').in(map);
+      queryCount = queryCount.where('tipoDenuncia').in(map);
     }
 
     const sortField: string = ordenadoPor;

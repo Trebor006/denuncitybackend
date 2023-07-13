@@ -77,6 +77,7 @@ export class DenunciasController {
     @Query('porPagina') porPagina: number,
     @Query('ordenadoPor') ordenadoPor: string,
     @Query('ordenadoDir') ordenadoDir: number,
+    @Query('departamento') departamento: string,
   ) {
     console.log('estado : ' + estado);
     console.log('fechaInicio : ' + fechaInicio);
@@ -86,6 +87,7 @@ export class DenunciasController {
     console.log('porPagina : ' + porPagina);
     console.log('ordenadoPor : ' + ordenadoPor);
     console.log('ordenadoDir : ' + ordenadoDir);
+    console.log('departamento : ' + departamento);
 
     const result = await this.denunciasService.obtenerDenunciasPaginadas(
       estado,
@@ -96,6 +98,7 @@ export class DenunciasController {
       porPagina,
       ordenadoPor,
       ordenadoDir,
+      departamento,
     );
 
     return result;

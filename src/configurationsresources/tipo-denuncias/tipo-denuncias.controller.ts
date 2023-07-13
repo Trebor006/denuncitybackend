@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { TipoDenunciasService } from './tipo-denuncias.service';
 import { CreateTipoDenunciaDto } from './dto/create-tipo-denuncia.dto';
 
@@ -23,6 +14,11 @@ export class TipoDenunciasController {
   @Get()
   obtenerRegistros() {
     return this.tipoDenunciasService.obtenerRegistros();
+  }
+
+  @Get('porDepartamento')
+  buscarTipoDenuncias(@Query('departamento') departamento: string) {
+    return this.tipoDenunciasService.obtenerRegistrosFiltrados(departamento);
   }
 
   @Get('buscar')
