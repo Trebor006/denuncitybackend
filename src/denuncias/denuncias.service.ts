@@ -16,6 +16,12 @@ import { BaseResponse } from '../common/dto/base/base-response.dto';
 import { DenunciaDto } from '../common/dto/denuncia-dto';
 import { TipoDenunciasService } from '../configurationsresources/tipo-denuncias/tipo-denuncias.service';
 import { NotificacionesService } from '../notificaciones/notificaciones.service';
+import { ActualizarEstadoDenunciaRequestDto } from './dto/actualizar-estado-denuncia.request.dto';
+import { Usuario } from '../schemas/usuario.schema';
+import { AgregarComentarioDenunciaRequestDto } from './dto/agregar-comentario-denuncia.request.dto';
+import { ComentarioDto } from '../common/dto/comentario-dto';
+import { ActualizarDepartamentoDenunciaRequestDto } from './dto/actualizar-departamento-denuncia.request.dto';
+import { TokenDispositivo } from '../schemas/tokenDispositivo.schema';
 
 @Injectable()
 export class DenunciasService {
@@ -27,8 +33,10 @@ export class DenunciasService {
     private dropboxClientService: DropboxClientService,
     private tipoDenunciasService: TipoDenunciasService,
     private notificacionesService: NotificacionesService,
-    @InjectModel(Denuncia.name)
-    private denunciaModel: Model<Denuncia>,
+    @InjectModel(Usuario.name) private userModel: Model<Usuario>,
+    @InjectModel(Denuncia.name) private denunciaModel: Model<Denuncia>,
+    @InjectModel(TokenDispositivo.name)
+    private tokenDispositivoModel: Model<TokenDispositivo>,
   ) {}
 
   async crear(createDenunciaDto: CrearDenunciaRequestDto) {
@@ -257,6 +265,7 @@ export class DenunciasService {
     nuevaDenunciaDto.estado = rechazarDenuncia ? 'RECHAZADA' : 'PENDIENTE';
     nuevaDenunciaDto.imagenesUrls = imageUrls;
     nuevaDenunciaDto.createdAt = new Date();
+    nuevaDenunciaDto.comentarios = [];
 
     const model = new this.denunciaModel(nuevaDenunciaDto);
     const denunciaAlmacenada = await model.save();
@@ -456,6 +465,126 @@ export class DenunciasService {
       lon: denuncia.lon,
       lat: denuncia.lat,
       createdAt: this.parseDate(denuncia.createdAt),
+      comentarios: denuncia.comentarios,
     };
+  }
+
+  async actualizarEstadoDenuncia(
+    id: string,
+    actualizarEstadoDenunciaRequestDto: ActualizarEstadoDenunciaRequestDto,
+  ) {
+    const denuncia = await this.denunciaModel.findOne({ hash: id }).exec();
+    if (denuncia == null) {
+      new Error('No existe la denuncia');
+    }
+
+    const estado = actualizarEstadoDenunciaRequestDto.estado;
+    denuncia.estado = estado;
+    await denuncia.save();
+
+    const user = await this.userModel
+      .findOne({ correo: denuncia.correo })
+      .exec();
+
+    const tokensDocuments = await this.tokenDispositivoModel
+      .find({ correo: denuncia.correo })
+      .exec();
+
+    const tokens = await tokensDocuments.map(
+      (tokensDocuments) => tokensDocuments.tokenDevice,
+    );
+
+    this.notificacionesService.sendNotification(
+      tokens,
+      'Estado de denuncia Actualizado',
+      denuncia.titulo + '....',
+      JSON.stringify(denuncia),
+      denuncia.imagenesUrls[0],
+      denuncia.hash,
+      user.correo,
+    );
+    console.log(JSON.stringify(denuncia));
+  }
+
+  async agregarComentarioDenuncia(
+    id: string,
+    agregarComentarioDenunciaRequestDto: AgregarComentarioDenunciaRequestDto,
+  ) {
+    const denuncia = await this.denunciaModel.findOne({ hash: id }).exec();
+    if (denuncia == null) {
+      new Error('No existe la denuncia');
+    }
+
+    let comentario = new ComentarioDto();
+    comentario.funcionario = agregarComentarioDenunciaRequestDto.funcionario;
+    comentario.departamento = agregarComentarioDenunciaRequestDto.departamento;
+    comentario.comentario = agregarComentarioDenunciaRequestDto.comentario;
+    comentario.accion = 'Comentario';
+    comentario.createdAt = new Date();
+
+    denuncia.comentarios.push(comentario);
+    await denuncia.save();
+
+    const user = await this.userModel
+      .findOne({ correo: denuncia.correo })
+      .exec();
+
+    const tokensDocuments = await this.tokenDispositivoModel
+      .find({ usuario: denuncia.correo })
+      .exec();
+
+    const tokens = await tokensDocuments.map(
+      (tokensDocuments) => tokensDocuments.tokenDevice,
+    );
+
+    this.notificacionesService.sendNotification(
+      tokens,
+      'Comentario añadido a Denuncia',
+      denuncia.titulo + '....',
+      JSON.stringify(denuncia),
+      denuncia.imagenesUrls[0],
+      denuncia.hash,
+      user.correo,
+    );
+
+    console.log(JSON.stringify(denuncia));
+  }
+
+  async actualizarDepartamentoDenuncia(
+    id: string,
+    actualizarDepartamentoDenunciaRequestDto: ActualizarDepartamentoDenunciaRequestDto,
+  ) {
+    const denuncia = await this.denunciaModel.findOne({ hash: id }).exec();
+    if (denuncia == null) {
+      new Error('No existe la denuncia');
+    }
+
+    denuncia.tipoDenuncia =
+      actualizarDepartamentoDenunciaRequestDto.departamentoNuevo;
+    await denuncia.save();
+
+    const user = await this.userModel
+      .findOne({ usuario: denuncia.correo })
+      .exec();
+
+    const tokensDocuments = await this.tokenDispositivoModel
+      .find({ usuario: denuncia.correo })
+      .exec();
+
+    const tokens = await tokensDocuments.map(
+      (tokensDocuments) => tokensDocuments.tokenDevice,
+    );
+
+    this.notificacionesService.sendNotification(
+      tokens,
+      'Estado de denuncia Actualizado',
+      denuncia.titulo + '....',
+      JSON.stringify(denuncia),
+      denuncia.imagenesUrls[0],
+      denuncia.hash,
+      user.correo,
+    );
+
+    console.log(JSON.stringify(denuncia));
   }
 }

@@ -3,6 +3,9 @@ import { DenunciasService } from './denuncias.service';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { DenunciasValidatorService } from './denuncias.validator.service';
 import { CancelarDenunciaRequestDto } from './dto/cancelar-denuncia.request.dto';
+import { ActualizarEstadoDenunciaRequestDto } from './dto/actualizar-estado-denuncia.request.dto';
+import { AgregarComentarioDenunciaRequestDto } from './dto/agregar-comentario-denuncia.request.dto';
+import { ActualizarDepartamentoDenunciaRequestDto } from './dto/actualizar-departamento-denuncia.request.dto';
 
 @Controller('denuncias')
 export class DenunciasController {
@@ -120,6 +123,48 @@ export class DenunciasController {
   ) {
     const result = await this.denunciasService.cancelar(
       cancelarDenunciaRequestDto,
+    );
+
+    return result;
+  }
+
+  @Post('actualizarEstado')
+  async actualizarEstado(
+    @Query('id') id: string,
+    @Body()
+    actualizarEstadoDenunciaRequestDto: ActualizarEstadoDenunciaRequestDto,
+  ) {
+    const result = await this.denunciasService.actualizarEstadoDenuncia(
+      id,
+      actualizarEstadoDenunciaRequestDto,
+    );
+
+    return result;
+  }
+
+  @Post('agregarComentario')
+  async agregarComentario(
+    @Query('id') id: string,
+    @Body()
+    agregarComentarioDenunciaRequestDto: AgregarComentarioDenunciaRequestDto,
+  ) {
+    const result = await this.denunciasService.agregarComentarioDenuncia(
+      id,
+      agregarComentarioDenunciaRequestDto,
+    );
+
+    return result;
+  }
+
+  @Post('actualizarDepartamento')
+  async actualizarDepartamento(
+    @Query('id') id: string,
+    @Body()
+    ActualizarDepartamentoDenunciaRequestDto: ActualizarDepartamentoDenunciaRequestDto,
+  ) {
+    const result = await this.denunciasService.actualizarDepartamentoDenuncia(
+      id,
+      ActualizarDepartamentoDenunciaRequestDto,
     );
 
     return result;

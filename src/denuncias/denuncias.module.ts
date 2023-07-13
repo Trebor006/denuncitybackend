@@ -22,10 +22,22 @@ import {
 } from '../schemas/departamento.schema';
 import { DepartamentosService } from '../configurationsresources/departamentos/departamentos.service';
 import { NotificacionesService } from '../notificaciones/notificaciones.service';
+import { Usuario, UsuarioSchema } from '../schemas/usuario.schema';
+import {
+  Notificaciones,
+  NotificacionesSchema,
+} from '../schemas/notificaciones.schema';
+import {
+  TokenDispositivo,
+  TokenDispositivoSchema,
+} from '../schemas/tokenDispositivo.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
+      { name: Usuario.name, schema: UsuarioSchema },
+      { name: Notificaciones.name, schema: NotificacionesSchema },
+      { name: TokenDispositivo.name, schema: TokenDispositivoSchema },
       { name: Denuncia.name, schema: DenunciaSchema },
       { name: TipoDenuncias.name, schema: TipoDenunciasSchema },
       { name: Departamento.name, schema: DepartamentoSchema },

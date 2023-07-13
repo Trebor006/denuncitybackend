@@ -31,6 +31,11 @@ import { FuncionariosModule } from './configurationsresources/funcionarios/funci
 import { NotificacionesService } from './notificaciones/notificaciones.service';
 import { FirebaseModule } from 'nestjs-firebase';
 import { join } from 'path';
+import { NotificacionesModule } from './notificaciones/notificaciones.module';
+import {
+  Notificaciones,
+  NotificacionesSchema,
+} from './schemas/notificaciones.schema';
 
 @Module({
   imports: [
@@ -46,6 +51,7 @@ import { join } from 'path';
     }),
     MongooseModule.forFeature([
       { name: Configuraciones.name, schema: ConfiguracionesSchema },
+      { name: Notificaciones.name, schema: NotificacionesSchema },
     ]),
     MailerModule.forRootAsync({
       useFactory: () => ({
@@ -83,6 +89,7 @@ import { join } from 'path';
     DepartamentosModule,
     TipoDenunciasModule,
     FuncionariosModule,
+    NotificacionesModule,
   ],
   controllers: [AppController],
   providers: [

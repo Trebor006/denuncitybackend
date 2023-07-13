@@ -19,12 +19,17 @@ import {
   Configuraciones,
   ConfiguracionesSchema,
 } from '../schemas/configuracion.schema';
+import {
+  TokenDispositivo,
+  TokenDispositivoSchema,
+} from '../schemas/tokenDispositivo.schema';
 
 @Module({
   imports: [
     GeneradorCodigoModule,
     MongooseModule.forFeature([
       { name: Usuario.name, schema: UsuarioSchema },
+      { name: TokenDispositivo.name, schema: TokenDispositivoSchema },
       { name: CodigoVerificacion.name, schema: CodigoVerificacionSchema },
       { name: HistorialContrasena.name, schema: HistorialContrasenaSchema },
       { name: Configuraciones.name, schema: ConfiguracionesSchema },

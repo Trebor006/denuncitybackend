@@ -1,3 +1,5 @@
+import { ComentarioDto } from '../../common/dto/comentario-dto';
+
 export class CrearDenunciaDto {
   hash: string;
   correo: string;
@@ -11,4 +13,5 @@ export class CrearDenunciaDto {
   imagenesUrls: string[];
   createdAt: Date;
   estado: string;
+  comentarios: ComentarioDto[];
 }

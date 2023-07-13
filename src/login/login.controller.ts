@@ -5,6 +5,7 @@ import { RegistroUsuarioDto } from './dto/registro.usuario.dto';
 import { BaseResponse } from '../common/dto/base/base-response.dto';
 import { VerificarLoginUsuarioDto } from './dto/verificar.login.usuario.dto';
 import { ActualizarUsuarioDto } from './dto/actualizar.usuario.dto';
+import { RegistarTokenDto } from './dto/registar-token.dto';
 
 @Controller('usuario')
 export class LoginController {
@@ -59,6 +60,19 @@ export class LoginController {
     await this.loginService.login(loginUsuarioDto).then(function (result) {
       promise = result;
     });
+    return BaseResponse.generateOkResponse('OK', promise);
+  }
+
+  @Post('registrarToken')
+  async registrarToken(@Body() registarTokenDto: RegistarTokenDto) {
+    console.log('registrarToken :: ', { registarTokenDto });
+    let promise: any;
+
+    await this.loginService
+      .registrarToken(registarTokenDto)
+      .then(function (result) {
+        promise = result;
+      });
     return BaseResponse.generateOkResponse('OK', promise);
   }
 }

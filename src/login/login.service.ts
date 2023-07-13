@@ -10,11 +10,16 @@ import { HistorialContrasenaService } from '../historial-contrasena/historial-co
 import { VerificarLoginUsuarioDto } from './dto/verificar.login.usuario.dto';
 import { ActualizarUsuarioDto } from './dto/actualizar.usuario.dto';
 import { ConfigurationsService } from '../configurations/configurations.service';
+import { RegistarTokenDto } from './dto/registar-token.dto';
+import { TokenDispositivo } from '../schemas/tokenDispositivo.schema';
+import { TokenDispositivoDto } from '../common/dto/token-dispositivo-dto';
 
 @Injectable()
 export class LoginService {
   constructor(
     @InjectModel(Usuario.name) private userModel: Model<Usuario>,
+    @InjectModel(TokenDispositivo.name)
+    private tokenDispositivoModel: Model<TokenDispositivo>,
     private readonly codeVerifierService: GeneradorCodigoService,
     private readonly passwordHistoryService: HistorialContrasenaService,
     private readonly configurationsService: ConfigurationsService,
@@ -156,5 +161,20 @@ export class LoginService {
     }
 
     return contrasenaValida;
+  }
+
+  async registrarToken(registarTokenDto: RegistarTokenDto) {
+    let tokenDispositivoDto = new TokenDispositivoDto();
+    tokenDispositivoDto.tokenDevice = registarTokenDto.token;
+    tokenDispositivoDto.usuario = registarTokenDto.correo;
+    tokenDispositivoDto.createdAt = new Date();
+
+    const savedTokenDispotivo = new this.tokenDispositivoModel(
+      tokenDispositivoDto,
+    );
+
+    savedTokenDispotivo.save();
+
+    return savedTokenDispotivo;
   }
 }
