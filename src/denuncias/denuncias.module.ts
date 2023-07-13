@@ -31,6 +31,7 @@ import {
   TokenDispositivo,
   TokenDispositivoSchema,
 } from '../schemas/tokenDispositivo.schema';
+import { MyGateway } from '../MyGateway';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import {
     TipoDenunciasService,
     DepartamentosService,
     NotificacionesService,
+    MyGateway,
   ],
 })
 export class DenunciasModule {}

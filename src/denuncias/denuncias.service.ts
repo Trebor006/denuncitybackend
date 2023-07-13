@@ -24,6 +24,8 @@ import { ActualizarDepartamentoDenunciaRequestDto } from './dto/actualizar-depar
 import { TokenDispositivo } from '../schemas/tokenDispositivo.schema';
 import { DepartamentosService } from '../configurationsresources/departamentos/departamentos.service';
 import { Departamento } from '../schemas/departamento.schema';
+import { MyGateway } from '../MyGateway';
+import { TipoDenuncia } from '../common/dto/tipo-denuncia';
 
 @Injectable()
 export class DenunciasService {
@@ -40,6 +42,7 @@ export class DenunciasService {
     @InjectModel(Denuncia.name) private denunciaModel: Model<Denuncia>,
     @InjectModel(TokenDispositivo.name)
     private tokenDispositivoModel: Model<TokenDispositivo>,
+    private myGateway: MyGateway,
   ) {}
 
   async crear(createDenunciaDto: CrearDenunciaRequestDto) {
@@ -120,6 +123,10 @@ export class DenunciasService {
     );
 
     if (denunciaContieneContenidoOfensivo || !imagenCorrespondeTipoDenuncia) {
+      this.myGateway.emitInsertEvent(
+        await this.mapearDenuncia(denunciaRegistrada),
+      );
+
       return BaseResponse.generateOkResponse(
         'La Denuncia ha sido registrada como Rechazada',
         {
@@ -423,28 +430,71 @@ export class DenunciasService {
     return { denuncias, totalPaginas };
   }
 
+  // private async mapearDenuncias(denuncias: Denuncia[]): Promise<DenunciaDto[]> {
+  //   const tiposDenuncias = await this.tipoDenunciasService.mapToTipoDenuncia();
+  //
+  //   return denuncias.map((denuncia) => {
+  //     const tipoDenuncia = tiposDenuncias.find(
+  //       (tipo) => tipo.tipo === denuncia.tipoDenuncia,
+  //     );
+  //
+  //     return {
+  //       _id: denuncia.hash,
+  //       correo: denuncia.correo,
+  //       titulo: denuncia.titulo,
+  //       descripcion: denuncia.descripcion,
+  //       tipoDenuncia: denuncia.tipoDenuncia,
+  //       colorMarker: tipoDenuncia ? tipoDenuncia.color : '', // Obtener el color del tipo de denuncia
+  //       estado: denuncia.estado,
+  //       imagenesUrls: denuncia.imagenesUrls,
+  //       lon: denuncia.lon,
+  //       lat: denuncia.lat,
+  //       createdAt: this.parseDate(denuncia.createdAt),
+  //     };
+  //   });
+  // }
+
+  private async mapearDenuncia(
+    denuncia: Denuncia,
+    tiposDenuncias?: TipoDenuncia[],
+  ): Promise<DenunciaDto> {
+    if (!tiposDenuncias) {
+      const tiposDenuncias =
+        await this.tipoDenunciasService.mapToTipoDenuncia();
+    }
+
+    const tipoDenuncia = tiposDenuncias.find(
+      (tipo) => tipo.tipo === denuncia.tipoDenuncia,
+    );
+
+    return {
+      _id: denuncia.hash,
+      correo: denuncia.correo,
+      titulo: denuncia.titulo,
+      descripcion: denuncia.descripcion,
+      tipoDenuncia: denuncia.tipoDenuncia,
+      colorMarker: tipoDenuncia ? tipoDenuncia.color : '',
+      estado: denuncia.estado,
+      imagenesUrls: denuncia.imagenesUrls,
+      lon: denuncia.lon,
+      lat: denuncia.lat,
+      createdAt: this.parseDate(denuncia.createdAt),
+    };
+  }
+
   private async mapearDenuncias(denuncias: Denuncia[]): Promise<DenunciaDto[]> {
+    const denunciasMapeadas = [];
     const tiposDenuncias = await this.tipoDenunciasService.mapToTipoDenuncia();
 
-    return denuncias.map((denuncia) => {
-      const tipoDenuncia = tiposDenuncias.find(
-        (tipo) => tipo.tipo === denuncia.tipoDenuncia,
+    for (const denuncia of denuncias) {
+      const denunciaMapeada = await this.mapearDenuncia(
+        denuncia,
+        tiposDenuncias,
       );
+      denunciasMapeadas.push(denunciaMapeada);
+    }
 
-      return {
-        _id: denuncia.hash,
-        correo: denuncia.correo,
-        titulo: denuncia.titulo,
-        descripcion: denuncia.descripcion,
-        tipoDenuncia: denuncia.tipoDenuncia,
-        colorMarker: tipoDenuncia ? tipoDenuncia.color : '', // Obtener el color del tipo de denuncia
-        estado: denuncia.estado,
-        imagenesUrls: denuncia.imagenesUrls,
-        lon: denuncia.lon,
-        lat: denuncia.lat,
-        createdAt: this.parseDate(denuncia.createdAt),
-      };
-    });
+    return denunciasMapeadas;
   }
 
   parseDate(createdAt: Date): string {
