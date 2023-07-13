@@ -23,12 +23,17 @@ import {
   TokenDispositivo,
   TokenDispositivoSchema,
 } from '../schemas/tokenDispositivo.schema';
+import {
+  Notificaciones,
+  NotificacionesSchema,
+} from '../schemas/notificaciones.schema';
 
 @Module({
   imports: [
     GeneradorCodigoModule,
     MongooseModule.forFeature([
       { name: Usuario.name, schema: UsuarioSchema },
+      { name: Notificaciones.name, schema: NotificacionesSchema },
       { name: TokenDispositivo.name, schema: TokenDispositivoSchema },
       { name: CodigoVerificacion.name, schema: CodigoVerificacionSchema },
       { name: HistorialContrasena.name, schema: HistorialContrasenaSchema },

@@ -13,6 +13,8 @@ import { ConfigurationsService } from '../configurations/configurations.service'
 import { RegistarTokenDto } from './dto/registar-token.dto';
 import { TokenDispositivo } from '../schemas/tokenDispositivo.schema';
 import { TokenDispositivoDto } from '../common/dto/token-dispositivo-dto';
+import { NotificacionesService } from '../notificaciones/notificaciones.service';
+import { Notificaciones } from '../schemas/notificaciones.schema';
 
 @Injectable()
 export class LoginService {
@@ -20,6 +22,8 @@ export class LoginService {
     @InjectModel(Usuario.name) private userModel: Model<Usuario>,
     @InjectModel(TokenDispositivo.name)
     private tokenDispositivoModel: Model<TokenDispositivo>,
+    @InjectModel(Notificaciones.name)
+    private notificacionesModel: Model<Notificaciones>,
     private readonly codeVerifierService: GeneradorCodigoService,
     private readonly passwordHistoryService: HistorialContrasenaService,
     private readonly configurationsService: ConfigurationsService,
@@ -176,5 +180,13 @@ export class LoginService {
     savedTokenDispotivo.save();
 
     return savedTokenDispotivo;
+  }
+
+  async listarNotificaciones(correo: string) {
+    const notificaciones = await this.notificacionesModel.find({
+      usuario: correo,
+    });
+
+    return notificaciones;
   }
 }

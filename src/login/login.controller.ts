@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { LoginUsuarioDto } from './dto/login-usuario.dto';
 import { RegistroUsuarioDto } from './dto/registro.usuario.dto';
@@ -74,5 +74,14 @@ export class LoginController {
         promise = result;
       });
     return BaseResponse.generateOkResponse('OK', promise);
+  }
+
+  @Get('notificaciones')
+  async listarNotificaciones(@Query('correo') correo: string) {
+    console.log('correo : ' + correo);
+
+    const result = await this.loginService.listarNotificaciones(correo);
+
+    return result;
   }
 }
