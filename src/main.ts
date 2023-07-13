@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   // // Configuración de CORS para permitir todos los orígenes
   // const corsOptions: CorsOptions = {

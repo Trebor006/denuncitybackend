@@ -543,6 +543,15 @@ export class DenunciasService {
 
     const estado = actualizarEstadoDenunciaRequestDto.estado;
     denuncia.estado = estado;
+
+    let comentario = new ComentarioDto();
+    comentario.funcionario = actualizarEstadoDenunciaRequestDto.funcionario;
+    comentario.departamento = actualizarEstadoDenunciaRequestDto.departamento;
+    comentario.comentario = actualizarEstadoDenunciaRequestDto.comentario;
+    comentario.accion = 'Estado de denuncia Actualizado';
+    comentario.createdAt = new Date();
+
+    denuncia.comentarios.push(comentario);
     await denuncia.save();
 
     const user = await this.userModel
@@ -550,7 +559,7 @@ export class DenunciasService {
       .exec();
 
     const tokensDocuments = await this.tokenDispositivoModel
-      .find({ correo: denuncia.correo })
+      .find({ usuario: denuncia.correo })
       .exec();
 
     const tokens = await tokensDocuments.map(
