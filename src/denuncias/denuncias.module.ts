@@ -21,6 +21,7 @@ import {
   DepartamentoSchema,
 } from '../schemas/departamento.schema';
 import { DepartamentosService } from '../configurationsresources/departamentos/departamentos.service';
+import { NotificacionesService } from '../notificaciones/notificaciones.service';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { DepartamentosService } from '../configurationsresources/departamentos/d
     HashCodeService,
     TipoDenunciasService,
     DepartamentosService,
+    NotificacionesService,
   ],
 })
 export class DenunciasModule {}

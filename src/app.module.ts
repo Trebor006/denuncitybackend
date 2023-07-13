@@ -28,10 +28,16 @@ import { HashCodeService } from './common/utils/hash-code/hash-code.service';
 import { DepartamentosModule } from './configurationsresources/departamentos/departamentos.module';
 import { TipoDenunciasModule } from './configurationsresources/tipo-denuncias/tipo-denuncias.module';
 import { FuncionariosModule } from './configurationsresources/funcionarios/funcionarios.module';
+import { NotificacionesService } from './notificaciones/notificaciones.service';
+import { FirebaseModule } from 'nestjs-firebase';
+import { join } from 'path';
 
 @Module({
   imports: [
     LoginModule,
+    FirebaseModule.forRoot({
+      googleApplicationCredential: join(__dirname, '../firebase-admin.json'),
+    }),
     ConfigModule.forRoot(),
     MongooseModule.forRootAsync({
       useFactory: async () => ({
@@ -87,6 +93,7 @@ import { FuncionariosModule } from './configurationsresources/funcionarios/funci
     DropboxClientService,
     BufferUtilService,
     HashCodeService,
+    NotificacionesService,
   ],
 })
 export class AppModule {}

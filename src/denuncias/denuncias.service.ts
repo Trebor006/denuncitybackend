@@ -1,4 +1,4 @@
-import { Injectable, Query } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CrearDenunciaRequestDto } from './dto/crear-denuncia.request.dto';
 import { OpenaiService } from '../components/openai/openai.service';
 import { DropboxClientService } from '../components/dropbox-client/dropbox-client.service';
@@ -15,6 +15,7 @@ import { ErrorCodes } from '../common/dto/base/ErrorCodes';
 import { BaseResponse } from '../common/dto/base/base-response.dto';
 import { DenunciaDto } from '../common/dto/denuncia-dto';
 import { TipoDenunciasService } from '../configurationsresources/tipo-denuncias/tipo-denuncias.service';
+import { NotificacionesService } from '../notificaciones/notificaciones.service';
 
 @Injectable()
 export class DenunciasService {
@@ -25,6 +26,7 @@ export class DenunciasService {
     private openaiService: OpenaiService,
     private dropboxClientService: DropboxClientService,
     private tipoDenunciasService: TipoDenunciasService,
+    private notificacionesService: NotificacionesService,
     @InjectModel(Denuncia.name)
     private denunciaModel: Model<Denuncia>,
   ) {}
