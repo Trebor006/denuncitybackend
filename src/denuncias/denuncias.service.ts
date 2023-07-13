@@ -22,6 +22,8 @@ import { AgregarComentarioDenunciaRequestDto } from './dto/agregar-comentario-de
 import { ComentarioDto } from '../common/dto/comentario-dto';
 import { ActualizarDepartamentoDenunciaRequestDto } from './dto/actualizar-departamento-denuncia.request.dto';
 import { TokenDispositivo } from '../schemas/tokenDispositivo.schema';
+import { DepartamentosService } from '../configurationsresources/departamentos/departamentos.service';
+import { Departamento } from '../schemas/departamento.schema';
 
 @Injectable()
 export class DenunciasService {
@@ -33,6 +35,7 @@ export class DenunciasService {
     private dropboxClientService: DropboxClientService,
     private tipoDenunciasService: TipoDenunciasService,
     private notificacionesService: NotificacionesService,
+    private departamentosService: DepartamentosService,
     @InjectModel(Usuario.name) private userModel: Model<Usuario>,
     @InjectModel(Denuncia.name) private denunciaModel: Model<Denuncia>,
     @InjectModel(TokenDispositivo.name)
@@ -373,14 +376,18 @@ export class DenunciasService {
     const skip = (pagina - 1) * porPagina;
 
     let query = this.denunciaModel.find();
+    let queryCount = this.denunciaModel.find();
 
     if (estado) {
       query = query.where('estado', estado);
+      queryCount = queryCount.where('estado', estado);
     }
 
     if (fechaInicio) {
       // @ts-ignore
       query = query.where('createdAt').gte(new Date(fechaInicio));
+      // @ts-ignore
+      queryCount = queryCount.where('createdAt').gte(new Date(fechaInicio));
     }
 
     if (fechaFin) {
@@ -393,10 +400,13 @@ export class DenunciasService {
 
       // @ts-ignore
       query = query.where('createdAt').lte(fecha);
+      // @ts-ignore
+      queryCount = queryCount.where('createdAt').lte(fecha);
     }
 
     if (tipoDenuncia) {
       query = query.where('tipoDenuncia', tipoDenuncia);
+      queryCount = queryCount.where('tipoDenuncia', tipoDenuncia);
     }
 
     const sortField: string = ordenadoPor;
@@ -404,9 +414,8 @@ export class DenunciasService {
     sortQuery[sortField] = ordenadoDir;
 
     const [denunciasSaved, totalDenuncias] = await Promise.all([
-      // @ts-ignore
       query.sort(sortQuery).skip(skip).limit(porPagina).exec(),
-      this.denunciaModel.countDocuments().exec(),
+      queryCount.countDocuments().exec(),
     ]);
 
     const totalPaginas = Math.ceil(totalDenuncias / porPagina);
@@ -453,6 +462,7 @@ export class DenunciasService {
         hash: id,
       })
       .exec();
+    const departamentos = await this.departamentosService.obtenerRegistros();
 
     return {
       _id: denuncia.hash,
@@ -465,7 +475,10 @@ export class DenunciasService {
       lon: denuncia.lon,
       lat: denuncia.lat,
       createdAt: this.parseDate(denuncia.createdAt),
-      comentarios: denuncia.comentarios,
+      comentarios: await this.parseComments(
+        denuncia.comentarios,
+        departamentos,
+      ),
     };
   }
 
@@ -586,5 +599,24 @@ export class DenunciasService {
     );
 
     console.log(JSON.stringify(denuncia));
+  }
+
+  private async parseComments(
+    comentarios: ComentarioDto[],
+    departamentos: Departamento[],
+  ): Promise<ComentarioDto[]> {
+    comentarios.forEach((comentario) => {
+      const departamento = departamentos.find(
+        (departamento) => departamento.id === comentario.departamento,
+      );
+
+      if (departamento) {
+        // Realizar las operaciones que necesites con el departamento encontrado
+        console.log(departamento);
+        comentario.departamento = departamento.nombre;
+      }
+    });
+
+    return comentarios;
   }
 }
